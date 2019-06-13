@@ -2,6 +2,9 @@
 
 TODO:
 
+ - Test with sending pong back to ping ??!
+    * ["po", [] ]
+    * 3 seconds
  - Eslint and repo setup
  - Command class
  - Command Handler class
@@ -9,6 +12,11 @@ TODO:
  - Restructure code
     * Constants.js, Utils.js
  - Finish "!player"
+    * Maybe render the little banner thing
+    * in 22px GameFont
+    * with XP bar etc
+ - Add other krunker social commands
+ - Add total concurrant players (each region, each gamemode, each map)
  - Get games
  - Database setup (SQLite ?)
  - Create lobby
