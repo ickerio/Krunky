@@ -44,7 +44,7 @@ class KrunkyClient extends Discord.Client {
     
         log(`Command: ${command.name} | Guild: ${message.guild ? message.guild.name : 'DM'} | Author: ${message.author.tag}`, this.shard);
         try {
-            command.run(message, argsObj);
+            command.run(message, args);
         } catch(error) {
             message.reply('an unknown error occoured running the command.');
             log(`Error running ${command.name}`);
