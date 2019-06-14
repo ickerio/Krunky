@@ -1,7 +1,7 @@
 const Discord = require('discord.js'); 
 const Command = require('../Structs/Command.js');
 
-class helpCommand extends Command {
+class HelpCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'Help',
@@ -16,7 +16,7 @@ class helpCommand extends Command {
         });
     }
 
-    async run (message, args) {
+    async run(message, args) {
         if(args.length !== 0) {
             // Displaying help on a single command
             const command = this.client.commands.get(args[0].toLowerCase()) || this.client.commands.get(this.client.alliases.get(args[0].toLowerCase()));
@@ -41,4 +41,4 @@ class helpCommand extends Command {
     }
 }
 
-module.exports = helpCommand;
+module.exports = HelpCommand;

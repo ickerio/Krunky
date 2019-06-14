@@ -1,12 +1,13 @@
 const { RichEmbed } = require('discord.js');
 const Command = require('../Structs/Command.js');
 
-class aboutCommand extends Command {
+class AboutCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'About',
             useName: 'about',
             description:  'Short description of the bot.',
+            args: {},
     
             type: 'Util',
             usage: 'about',
@@ -16,7 +17,7 @@ class aboutCommand extends Command {
         });
     }
 
-    async run (message) {
+    async run(message) {
         const date = new Date(this.client.uptime);
     
         const embed = new RichEmbed()
@@ -34,4 +35,4 @@ class aboutCommand extends Command {
     }
 }
 
-module.exports = aboutCommand;
+module.exports = AboutCommand;

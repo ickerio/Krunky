@@ -36,9 +36,11 @@ class KrunkyClient extends Discord.Client {
         if (!command.channelTypes.includes(message.channel.type)) return;
         if (command.ownerOnly && message.author.id !== this.config.OWNER) return;
         
+        /* Arguments Object - to be worked on
         const argsObj = {};
         if (command.args.length !== args.length) return message.reply(`not enough arguments parsed. \`${this.command.usage}\``);
         command.args.forEach((value, index) => argsObj[value] = args[index]);
+        */
     
         log(`Command: ${command.name} | Guild: ${message.guild ? message.guild.name : 'DM'} | Author: ${message.author.tag}`, this.shard);
         try {

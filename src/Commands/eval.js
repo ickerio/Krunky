@@ -1,13 +1,12 @@
 const { clean } = require('../Util/Util.js');
 const Command = require('../Structs/Command.js');
 
-class evalCommand extends Command {
+class EvalCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'Eval',
             useName: 'eval',
             description:  'Evaluates some JavaScript',
-            args: [ 'command' ],
     
             type: 'Owner',
             usage: 'eval <code>',
@@ -16,11 +15,11 @@ class evalCommand extends Command {
             channelTypes: ['dm', 'group', 'text']
         });
     }
-    async run (message, args) {
+    async run(message, args) {
         try {
-            let evaled = await eval(args.commmand.join(' '));
+            let evaled = await eval(args.join(' '));
             
-            if (!args.command.length) return;
+            if (!args.length) return;
         
             if (typeof evaled !== 'string') evaled = require('util').inspect(evaled, {depth: 0});
         
@@ -36,4 +35,4 @@ class evalCommand extends Command {
     }
 }
 
-module.exports = evalCommand;
+module.exports = EvalCommand;

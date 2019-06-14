@@ -3,7 +3,7 @@ const Social = require('../Structs/Social/Social.js');
 
 const social = new Social();
 
-class playerCommand extends Command {
+class PlayerCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'Player',
@@ -18,11 +18,11 @@ class playerCommand extends Command {
         });
     }
 
-    async run (message, args) {
+    async run(message, args) {
         social.getUser(args[0])
             .then(d => message.channel.send(JSON.stringify(d)))
             .catch(err => message.channel.send(JSON.stringify(err)));
     }
 }
 
-module.exports = playerCommand;
+module.exports = PlayerCommand;
