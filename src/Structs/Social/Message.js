@@ -3,11 +3,11 @@ const { encode, decode } = require('msgpack-lite');
 class Translation {
     static encode(array) {
         const encBuff = encode(array);
-        return this.toArrayBuffer(encBuff)
+        return this.toArrayBuffer(encBuff);
     }
 
     static decode(data) {
-        return decode(new Uint8Array(data))
+        return decode(new Uint8Array(data));
     }
 
     static toArrayBuffer(buf) {

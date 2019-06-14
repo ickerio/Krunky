@@ -1,5 +1,5 @@
-const { clean } = require('../structs/util.js');
-const Command = require('../structs/Command.js');
+const { clean } = require('../Util/Util.js');
+const Command = require('../Structs/Command.js');
 
 class evalCommand extends Command {
     constructor(client) {
@@ -7,6 +7,7 @@ class evalCommand extends Command {
             name: 'Eval',
             useName: 'eval',
             description:  'Evaluates some JavaScript',
+            args: [ 'command' ],
     
             type: 'Owner',
             usage: 'eval <code>',
@@ -17,9 +18,9 @@ class evalCommand extends Command {
     }
     async run (message, args) {
         try {
-            let evaled = await eval(args.join(' '));
+            let evaled = await eval(args.commmand.join(' '));
             
-            if (!args.length) return;
+            if (!args.command.length) return;
         
             if (typeof evaled !== 'string') evaled = require('util').inspect(evaled, {depth: 0});
         

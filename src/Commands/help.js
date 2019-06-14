@@ -1,5 +1,5 @@
 const Discord = require('discord.js'); 
-const Command = require('../structs/Command.js');
+const Command = require('../Structs/Command.js');
 
 class helpCommand extends Command {
     constructor(client) {

@@ -5,12 +5,15 @@ TODO:
  - Test with sending pong back to ping ??!
     * ["po", [] ]
     * 3 seconds
- - Eslint and repo setup
- - Command class
- - Command Handler class
- - Kranky class
- - Restructure code
+ - Eslint and repo setup **DONE**
+ - Command class **DONE**
+ - Command Handler class **DONE**
+ - Kranky class **DONE**
+ - Restructure code **DONE**
     * Constants.js, Utils.js
+ - argsObj = { command : {optional: bool }} __DOING__
+    * Add optional tag
+    * Fix all commands regarding it
  - Finish "!player"
     * Maybe render the little banner thing
     * in 22px GameFont

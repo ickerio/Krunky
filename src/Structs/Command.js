@@ -5,6 +5,7 @@ class Command {
         this.name = options.name || 'No Name';
         this.useName = options.useName;
         this.description = options.description || 'No Description';
+        this.args = [];
 
         this.type = options.type || 'default';
         this.usage = options.usage || '<command> <args>';

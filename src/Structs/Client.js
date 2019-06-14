@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
-const { log } = require('./Util.js');
+const { log } = require('../Util/Util.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
@@ -35,10 +35,14 @@ class KrunkyClient extends Discord.Client {
     
         if (!command.channelTypes.includes(message.channel.type)) return;
         if (command.ownerOnly && message.author.id !== this.config.OWNER) return;
+        
+        const argsObj = {};
+        if (command.args.length !== args.length) return message.reply(`not enough arguments parsed. \`${this.command.usage}\``);
+        command.args.forEach((value, index) => argsObj[value] = args[index]);
     
         log(`Command: ${command.name} | Guild: ${message.guild ? message.guild.name : 'DM'} | Author: ${message.author.tag}`, this.shard);
         try {
-            command.run(message, args);
+            command.run(message, argsObj);
         } catch(error) {
             message.reply('an unknown error occoured running the command.');
             log(`Error running ${command.name}`);

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
-const { log } = require('./Structs/Util.js');
+const { log } = require('./Util/Util.js');
 
 const manager = new Discord.ShardingManager('./src/instance.js', {
     token: config.TOKEN,

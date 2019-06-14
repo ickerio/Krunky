@@ -1,5 +1,5 @@
-const Command = require('../structs/Command.js');
-const Social = require('../SocialAPI/Social.js');
+const Command = require('../Structs/Command.js');
+const Social = require('../Structs/Social/Social.js');
 
 const social = new Social();
 
