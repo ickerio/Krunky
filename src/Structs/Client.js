@@ -13,12 +13,12 @@ class KrunkyClient extends Discord.Client {
         this.on('error', process.exit);
     }
 
-    nowReady () {
+    nowReady() {
         log(`Logged in as ${this.user.tag}!`, this.shard);
         this.user.setActivity(...this.config.GAME);
     }
 
-    processMessage (message) {
+    processMessage(message) {
         if(message.content.startsWith(this.user.toString())) return message.reply(`**${this.config.PREFIX}** is my prefix`);
     
         // Ignore messages if statements
@@ -52,7 +52,7 @@ class KrunkyClient extends Discord.Client {
         }
     }
 
-    addCommand (file) {
+    addCommand(file) {
         if(file.split('.').slice(-1)[0] !== 'js') return;
 
         const command = require(`../Commands/${file}`);
@@ -63,14 +63,14 @@ class KrunkyClient extends Discord.Client {
         delete require.cache[require.resolve(`../Commands/${file}`)];
     }
 
-    addEvent (f) {
+    addEvent(f) {
         const eventName = f.split('.')[0];
         const event = require(`../events/${f}`);
         this.on(eventName, event.bind(null));
         delete require.cache[require.resolve(`../events/${f}`)];
     }
 
-    async registerCommands () {
+    async registerCommands() {
         this.commands = new Discord.Collection();
         this.alliases = new Discord.Collection();
 
@@ -78,13 +78,13 @@ class KrunkyClient extends Discord.Client {
         files.forEach(f => this.addCommand(f));
     }
 
-    registerEvents () {
+    registerEvents() {
         readdir('./src/events/', (err, files) => {
             if(!files) return;
             files.forEach(file => this.addEvent(file));
         });
     }
-    login (token) {
+    login(token) {
         super.login(token);
     }
 }
