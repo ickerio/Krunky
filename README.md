@@ -26,3 +26,6 @@ TODO:
  - Player / Guild lobby create presets
  - Save command to save your player id / name to discord account
  - Check "!player @User" and "!player" for own discord / own account
+
+
+ https://matchmaker.krunker.io/game-list?hostname=krunker.io

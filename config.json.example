@@ -1,0 +1,11 @@
+{
+  "TOKEN": "Discord Token",
+  "OWNER": "Owner ID",
+
+  "PREFIX": "?",
+  "COLOUR": "#92a8d1",
+  "EMBED_FOOTER": "Krunky Bot",
+
+  "DEFAULT_SERVER": "Default Server ID",
+  "STATUS_MESSAGE": "Game to play"
+}
