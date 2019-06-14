@@ -4,8 +4,8 @@
 
   "PREFIX": "?",
   "COLOUR": "#92a8d1",
-  "EMBED_FOOTER": "Krunky Bot",
+  "EMBED_FOOTER": "Krunky",
 
   "DEFAULT_SERVER": "Default Server ID",
-  "STATUS_MESSAGE": "Game to play"
+  "GAME": ['name', {type: ''}]
 }

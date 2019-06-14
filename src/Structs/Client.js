@@ -1,5 +1,6 @@
-const Discord = require('./node_modules/discord.js.js');
+const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
+const { log } = require('./Util.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
@@ -13,9 +14,8 @@ class KrunkyClient extends Discord.Client {
     }
 
     nowReady () {
-        console.log(`${new Date().toUTCString()} [${this.shard.id}] - Logged in as ${this.user.tag}!`);
-        
-        this.user.setGame(this.config.STATUS_MESSAGE);
+        log(`Logged in as ${this.user.tag}!`, this.shard);
+        this.user.setActivity(...this.config.GAME);
     }
 
     processMessage (message) {
@@ -36,8 +36,14 @@ class KrunkyClient extends Discord.Client {
         if (!command.channelTypes.includes(message.channel.type)) return;
         if (command.ownerOnly && message.author.id !== this.config.OWNER) return;
     
-        console.log(`${new Date().toUTCString()} [${this.shard.id}] - ${command.name} | ${message.guild ? message.guild.name : 'DM'}: ${message.author.tag}`);
-        command.run(message, args);
+        log(`Command: ${command.name} | Guild: ${message.guild ? message.guild.name : 'DM'} | Author: ${message.author.tag}`, this.shard);
+        try {
+            command.run(message, args);
+        } catch(error) {
+            message.reply('an unknown error occoured running the command.');
+            log(`Error running ${command.name}`);
+            log(error, {simple: true });
+        }
     }
 
     addCommand (file) {
@@ -77,4 +83,4 @@ class KrunkyClient extends Discord.Client {
     }
 }
 
-module.exports = mortyClient;
+module.exports = KrunkyClient;

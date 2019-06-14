@@ -27,7 +27,7 @@ class helpCommand extends Command {
             // Displaying help for all commands
             const embed = new Discord.RichEmbed()
                 .setColor(this.client.config.COLOUR)
-                .setAuthor('Morty Bot Commands', this.client.user.avatarURL);
+                .setAuthor('Krunky Commands', this.client.user.avatarURL);
     
             // Only add commands they're allowed access to
             this.client.commands.forEach(command => {

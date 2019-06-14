@@ -5,8 +5,6 @@ const Message = require('./Message.js');
 const ratelimit = 1000; // 1 second
 const timeoutPeriod = 3000; // 3 seconds
 
-let timeStart;
-
 class RequestQueue {
     constructor() {
         this.queue = [];
@@ -30,7 +28,7 @@ class RequestQueue {
 
         const req = new Request(user);
         req.addListener(resolve, reject);
-        this.queue.push(req)
+        this.queue.push(req);
 
         if (new Date().getTime() - this.lastRequest > ratelimit) {
             this.send(req);
@@ -38,11 +36,8 @@ class RequestQueue {
     }
 
     send(req = this.queue.find(r => !r.timeout)) {
-        if (!req) return this.nextRequest();
-
-        if (this.ws.readyState === WebSocket.CLOSING || this.ws.readyState === WebSocket.CLOSED) {
-            return this.connect();
-        }
+        if (!req || this.ws.readyState === WebSocket.CONNECTING) return this.nextRequest();
+        if (this.ws.readyState === WebSocket.CLOSING || this.ws.readyState === WebSocket.CLOSED) return this.connect();
 
         this.ws.send(Message.encode(['r', ['profile', req.user, '', null]]));
 
@@ -62,7 +57,7 @@ class RequestQueue {
         const req = this.queue.find(i => i.user === data.player_name);
         if (!req) return;
 
-        req.resolve(data)
+        req.resolve(data);
         clearTimeout(req.timeout);
         this.queue = this.queue.filter(r => r !== req);
     }

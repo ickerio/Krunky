@@ -1,4 +1,3 @@
-const { RichEmbed } = require('discord.js');
 const Command = require('../structs/Command.js');
 const Social = require('../SocialAPI/Social.js');
 
@@ -21,8 +20,8 @@ class playerCommand extends Command {
 
     async run (message, args) {
         social.getUser(args[0])
-            .then(d => msg.channel.send(JSON.stringify(d)))
-            .catch(err => console.log(err));
+            .then(d => message.channel.send(JSON.stringify(d)))
+            .catch(err => message.channel.send(JSON.stringify(err)));
     }
 }
 
