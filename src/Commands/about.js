@@ -24,7 +24,7 @@ class aboutCommand extends Command {
             .setColor(this.client.config.COLOUR)
     
             // Main Info
-            //.setDescription(`Shard ${this.client.shard.id}/${this.client.shard.count} has been running for ${date.getUTCDate()-1 !== 0 ? `${date.getUTCDate()-1} days ` : ''}${date.getUTCHours()} hours ${date.getUTCMinutes()} minutes, serving ${this.client.guilds.size} servers and ${this.client.users.size} users`)
+            .setDescription(`Shard ${this.client.shard.id}/${this.client.shard.count} has been running for ${date.getUTCDate()-1 !== 0 ? `${date.getUTCDate()-1} days ` : ''}${date.getUTCHours()} hours ${date.getUTCMinutes()} minutes, serving ${this.client.guilds.size} servers and ${this.client.users.size} users`)
     
             // Extra info
             .addField('Main Server', '[Krunker.io](http://discord.gg/krunker)', true)

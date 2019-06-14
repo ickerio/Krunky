@@ -1,7 +1,7 @@
-const KrunkyBot = require('./src/Structs/Client.js');
+const KrunkyBot = require('./Structs/Client.js');
 
 const client = new KrunkyBot({
-    config: require('./config.json'),
+    config: require('../config.json'),
     disabledEvents: [
         'TYPING_START'
     ],

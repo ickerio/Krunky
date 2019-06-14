@@ -2,7 +2,7 @@
   "name": "krunky",
   "version": "1.0.0",
   "description": "Discord bot for online fps game Krunker.io",
-  "main": "src/bot.js",
+  "main": "shard.js",
   "dependencies": {
     "discord.js": "^11.5.1",
     "msgpack-lite": "^0.1.26",
