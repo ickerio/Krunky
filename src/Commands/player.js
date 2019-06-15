@@ -32,8 +32,6 @@ class PlayerCommand extends Command {
     }
 
     async run(message, args) {
-<<<<<<< HEAD
-        
         try {
             const data = await social.getUser(args[0]);
 
