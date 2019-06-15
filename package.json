@@ -4,6 +4,7 @@
   "description": "Discord bot for online fps game Krunker.io",
   "main": "shard.js",
   "dependencies": {
+    "canvas": "^2.5.0",
     "discord.js": "^11.5.1",
     "msgpack-lite": "^0.1.26",
     "node-fetch": "^2.6.0",
