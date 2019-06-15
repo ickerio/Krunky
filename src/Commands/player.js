@@ -21,7 +21,6 @@ const padBottom = 6;
 const padVertical = 15;
 const padHorizontal = 10;
 const progressBarWidth = 150;
-const progressPadLeft = 30;
 const titleBarHeight = 60;
 const imageSize = 32;
 const imagePadRight = 10;
@@ -57,7 +56,7 @@ class PlayerCommand extends Command {
 
             this.drawBackground();
             await this.drawAvatar(message);
-            await this.drawPlayerInfo(data);
+            this.drawPlayerInfo(data);
 
             const attachment = await new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
             cache.set(args.name, attachment);
@@ -78,7 +77,7 @@ class PlayerCommand extends Command {
     }
 
     async drawAvatar(message) {
-        context.fillStyle = '#FFFFFF';
+        context.fillStyle = '#a0a0a0';
         context.fillRect(padLeft - imageBorderThickness, titleBarHeight / 2 - imageSize / 2 - imageBorderThickness, imageSize + imageBorderThickness * 2, imageSize + imageBorderThickness * 2);
 
         const data = await fetch(message.author.avatarURL.replace(/(size=)[^&]+/, '$1' + imageSize));
@@ -88,31 +87,26 @@ class PlayerCommand extends Command {
         await context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
     }
 
-    async drawPlayerInfo(data) {
+    drawPlayerInfo(data) {
         // Draw player name.
         context.font = `${ data.name.length < 10  ? titleFontSizePx : titleFontSize2Px }px FFF Forward`;
         context.fillStyle = '#FFFFFF';
         context.fillText(data.name, padLeft + imageSize + imagePadRight, padTop);
 
-        // Draw player krunk coins.
+        // Draw seperator
         context.fillStyle = '#a0a0a0';
         context.fillRect(padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
 
-        const imageData = await fs.readFileSync('./res/kr-icon.png');
-        //const buffer = await imageData.buffer();
-        const img = new Image();
-        img.src = imageData;
-        await context.drawImage(img, padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
-            titleBarHeight / 2 - imageSize / 2, imageSize, imageSize);
+        this.drawKrunkCoins(data);
 
         // Draw player level.
 
         this.drawStatRow('Level:', `${data.level}`, 0);
         // Create percentage bar.
         context.fillStyle = '#202020';
-        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
+        context.fillRect(padLeft + context.measureText('Level:').width + padHorizontal, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
         context.fillStyle = '#F2F202';
-        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft + progressBarWidth * 0.025, 
+        context.fillRect(padLeft + context.measureText('Level:').width + padHorizontal + progressBarWidth * 0.025, 
             10 + padTop + 0.36 * statFontSizePx + padVertical, 
             progressBarWidth * 0.95 * this.getLevelProgress(data.score), 
             statFontSizePx * 0.8 * 0.7);
@@ -144,6 +138,32 @@ class PlayerCommand extends Command {
         context.fillText(title, padLeft, 10 + padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
         context.fillStyle = '#000000';
         context.fillText(stat, canvas.width - padRight - context.measureText(stat).width, 10 + padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
+    }
+
+    drawKrunkCoins(data)
+    {
+        const imageData = fs.readFileSync('./res/kr-icon.png');
+        const img = new Image();
+        img.src = imageData;
+        context.drawImage(img, padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
+            titleBarHeight / 2 - imageSize / 2, imageSize, imageSize);
+
+        let text = '';
+        if (data.krunkies >= 1e6)
+        {
+            text = Math.floor(data.krunkies / 1e5) / 10 + 'M';
+        }
+        else if (data.krunkies >= 1e3)
+        {
+            text = Math.floor(data.krunkies / 1e2) / 10 + 'k';
+        }
+        else
+        {
+            text = data.krunkies;
+        }
+
+        context.fillStyle = '#FFFFFF';
+        context.fillText(text, padLeft + 2 * imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal * 3 + separatorWidth, padTop);
     }
 
     getLevelProgress(score) {
