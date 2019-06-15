@@ -1,7 +1,9 @@
 const Discord = require('discord.js');
+const fetch = require('node-fetch');
+const { createCanvas, Image } = require('canvas');
+
 const Command = require('../Structs/Command.js');
 const Social = require('../Structs/Social/Social.js');
-const { createCanvas } = require('canvas');
 
 // Init Canvas.
 const canvas = createCanvas(400, 400);
@@ -18,7 +20,6 @@ const progressBarWidth = 150;
 const progressPadLeft = 30;
 const titleBarHeight = 60;
 
-const date = new Date();
 const social = new Social();
 
 class PlayerCommand extends Command {
@@ -41,11 +42,11 @@ class PlayerCommand extends Command {
         try {
             const data = await social.getUser(args.name);
 
-            // TODO: Create image and send.
             this._createBackground();
-            //this._renderAvatar(message);
+            await this._renderAvatar(message);
             this._renderPlayerInfo(data);
-            var attachment = new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
+
+            const attachment = await new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
 
             message.channel.send(attachment);
         } catch (error) {
@@ -62,10 +63,12 @@ class PlayerCommand extends Command {
         context.fillRect(0, 0, canvas.width, titleBarHeight);
     }
 
-    _renderAvatar(message) {
-        var avatarURL = message.author.avatarURL.replace(/(size=)[^&]+/, '$1' +32);
-
-        context.drawImage(avatarURL, 0, 0);
+    async _renderAvatar(message) {
+        const data = await fetch(message.author.avatarURL.replace(/(size=)[^&]+/, '$1' +32));
+        const buffer = await data.buffer();
+        const img = new Image();
+        img.src = buffer;
+        return await context.drawImage(img, 0, 0);
 
     }
 
@@ -96,7 +99,7 @@ class PlayerCommand extends Command {
         context.fillStyle = '#b0b0b0';
 
         context.fillText('Krunky', padLeft, canvas.height - padBottom);
-        var dateString = date.toDateString();
+        const dateString = new Date().toDateString();
         context.fillText(`${dateString}`, canvas.width - padRight - context.measureText(dateString).width, canvas.height - padBottom);
     }
 
@@ -114,8 +117,8 @@ class PlayerCommand extends Command {
     }
 
     _findScore(score) {
-        var levelDecimal = 0.03 * Math.sqrt(score);
-        var level = Math.floor(levelDecimal);
+        const levelDecimal = 0.03 * Math.sqrt(score);
+        const level = Math.floor(levelDecimal);
         return levelDecimal - level;
     }
 }
