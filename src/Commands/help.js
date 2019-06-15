@@ -7,6 +7,7 @@ class HelpCommand extends Command {
             name: 'Help',
             useName: 'help',
             description:  'Displays all bot commands or just info on a specific one.',
+            args: { command: { required: false }},
     
             type: 'Util',
             usage: 'help <optional command name>',
@@ -17,9 +18,9 @@ class HelpCommand extends Command {
     }
 
     async run(message, args) {
-        if(args.length !== 0) {
+        if(args.command) {
             // Displaying help on a single command
-            const command = this.client.commands.get(args[0].toLowerCase()) || this.client.commands.get(this.client.alliases.get(args[0].toLowerCase()));
+            const command = this.client.commands.get(args.command.toLowerCase()) || this.client.commands.get(this.client.alliases.get(args.command.toLowerCase()));
             if(!command) return message.reply('The command does not exist');
 
             message.channel.send(`**${command.usage}**\n${command.description}${command.alliases.length !== 0  ? `\nAlliases: ${command.alliases.join(', ')}` : ''}`);

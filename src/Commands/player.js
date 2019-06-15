@@ -21,6 +21,7 @@ class PlayerCommand extends Command {
             name: 'Player',
             useName: 'player',
             description: 'Gets stats on a given player',
+            args: { name: {required: true }},
     
             type: 'Krunker',
             usage: 'player <player name>',
@@ -31,6 +32,7 @@ class PlayerCommand extends Command {
     }
 
     async run(message, args) {
+<<<<<<< HEAD
         
         try {
             const data = await social.getUser(args[0]);

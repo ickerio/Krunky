@@ -7,6 +7,7 @@ class EvalCommand extends Command {
             name: 'Eval',
             useName: 'eval',
             description:  'Evaluates some JavaScript',
+            args: { code: { required: true }},
     
             type: 'Owner',
             usage: 'eval <code>',
@@ -17,9 +18,9 @@ class EvalCommand extends Command {
     }
     async run(message, args) {
         try {
-            let evaled = await eval(args.join(' '));
+            let evaled = await eval(args._array.join(' '));
             
-            if (!args.length) return;
+            if (!args._array.length) return;
         
             if (typeof evaled !== 'string') evaled = require('util').inspect(evaled, {depth: 0});
         
