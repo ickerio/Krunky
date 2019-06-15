@@ -36,8 +36,7 @@ class HelpCommand extends Command {
                     embed.addField(command.usage,`${command.description}${command.alliases.length !== 0  ? `\nAlliases: ${command.alliases.join(', ')}` : ''}`);
             });
     
-            await message.author.send(embed);
-            if (message.channel.type !== 'dm') message.reply('I have DMed you the full list of commands.');
+            await message.channel.send(embed);
         }
     }
 }
