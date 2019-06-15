@@ -23,7 +23,7 @@ class RequestQueue {
     }
 
     addRequest(user, resolve, reject) {
-        const existing = this.queue.find(r => r.user = user);
+        const existing = this.queue.find(r => r.user === user);
         if (existing) return existing.addListener(resolve, reject);
 
         const req = new Request(user);
