@@ -30,7 +30,6 @@ const social = new Social();
 
 // Load krunker images.
 
-
 class PlayerCommand extends Command {
     constructor(client) {
         super(client, {
@@ -59,7 +58,7 @@ class PlayerCommand extends Command {
 
             message.channel.send(attachment);
         } catch (error) {
-            message.reply('Error while fetching player');
+            message.reply(error);
         }
     }
 
@@ -93,7 +92,7 @@ class PlayerCommand extends Command {
         context.fillStyle = '#a0a0a0';
         context.fillRect(padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
 
-
+        
 
         // Draw player level.
 
