@@ -33,7 +33,7 @@ class PlayerCommand extends Command {
 
     async run(message, args) {
         try {
-            const data = await social.getUser(args[0]);
+            const data = await social.getUser(args.name);
 
             // TODO: Create image and send.
             this._createBackground();
