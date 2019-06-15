@@ -34,19 +34,16 @@ class Social {
     }
 
     getKDR(data) {
-        if (!data || typeof data !== 'object' || !data.player_kills || !data.player_deaths) return new Error('MUST_SUPPLY', 'data fetched from api');
         const KDR = data.player_kills / data.player_deaths || 0;
         return KDR.toFixed(2);
     }
 
     getWL(data) {
-        if (!data || typeof data !== 'object' || !data.player_wins || !data.player_games_played) return new Error('MUST_SUPPLY', 'data fetched from api');
         const WL = data.player_wins / data.player_games_played || 0;
         return WL.toFixed(2);
     }
 
     getSPK(data) {
-        if (!data || typeof data !== 'object' || !data.player_score || !data.player_kills) return new Error('MUST_SUPPLY', 'data fetched from api');
         const SPK = data.player_score / data.player_kills || 0;
         return SPK.toFixed(2);
     }
