@@ -16,6 +16,7 @@ const padBottom = 6;
 const padVertical = 15;
 const progressBarWidth = 150;
 const progressPadLeft = 30;
+const titleBarHeight = 60;
 
 const date = new Date();
 const social = new Social();
@@ -42,6 +43,7 @@ class PlayerCommand extends Command {
 
             // TODO: Create image and send.
             this._createBackground();
+            //this._renderAvatar(message);
             this._renderPlayerInfo(data);
             var attachment = new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
 
@@ -55,12 +57,21 @@ class PlayerCommand extends Command {
         // Clear canvas for new image.
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = '#e6e6e6';
-        context.fillRect(0, 0, canvas.width, canvas.height, canvas.width, canvas.height);
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = '#1a1f26';
+        context.fillRect(0, 0, canvas.width, titleBarHeight);
+    }
+
+    _renderAvatar(message) {
+        var avatarURL = message.author.avatarURL.replace(/(size=)[^&]+/, '$1' +32);
+
+        context.drawImage(avatarURL, 0, 0);
+
     }
 
     _renderPlayerInfo(data) {
         context.font = `${titleFontSizePx}px FFF Forward`;
-        context.fillStyle = '#000000';
+        context.fillStyle = '#FFFFFF';
         context.fillText(data.name, padLeft, padTop);
 
         this._renderStatRow('Level:', `${data.level}`, 0);
@@ -68,7 +79,10 @@ class PlayerCommand extends Command {
         context.fillStyle = '#202020';
         context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
         context.fillStyle = '#F2F202';
-        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft + progressBarWidth * 0.025, 10 + padTop + 0.36 * statFontSizePx + padVertical, progressBarWidth * 0.95 * this._findScore(data.score), statFontSizePx * 0.8 * 0.7);
+        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft + progressBarWidth * 0.025, 
+            10 + padTop + 0.36 * statFontSizePx + padVertical, 
+            progressBarWidth * 0.95 * this._findScore(data.score), 
+            statFontSizePx * 0.8 * 0.7);
 
         this._renderStatRow('Kills:'        , data.kills,               1);
         this._renderStatRow('Deaths:'       , data.deaths,              2);
