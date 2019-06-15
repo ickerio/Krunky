@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { createCanvas, Image } = require('canvas');
+const fs = require('fs');
 
 const Command = require('../Structs/Command.js');
 const Social = require('../Structs/Social/Social.js');
@@ -52,7 +53,7 @@ class PlayerCommand extends Command {
 
             this.drawBackground();
             await this.drawAvatar(message);
-            this.drawPlayerInfo(data);
+            await this.drawPlayerInfo(data);
 
             const attachment = await new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
 
@@ -79,10 +80,10 @@ class PlayerCommand extends Command {
         const buffer = await data.buffer();
         const img = new Image();
         img.src = buffer;
-        return await context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
+        await context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
     }
 
-    drawPlayerInfo(data) {
+    async drawPlayerInfo(data) {
         // Draw player name.
         context.font = `${ data.name.length < 10  ? titleFontSizePx : titleFontSize2Px }px FFF Forward`;
         context.fillStyle = '#FFFFFF';
@@ -92,7 +93,12 @@ class PlayerCommand extends Command {
         context.fillStyle = '#a0a0a0';
         context.fillRect(padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
 
-        
+        const imageData = await fs.readFileSync('./res/kr-icon.png');
+        //const buffer = await imageData.buffer();
+        const img = new Image();
+        img.src = imageData;
+        await context.drawImage(img, padLeft + imageSize + imagePadRight + context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
+            titleBarHeight / 2 - imageSize / 2, imageSize, imageSize);
 
         // Draw player level.
 
