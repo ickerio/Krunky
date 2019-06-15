@@ -1,6 +1,6 @@
 const { encode, decode } = require('msgpack-lite');
 
-class Translation {
+class Message {
     static encode(array) {
         const encBuff = encode(array);
         return this.toArrayBuffer(encBuff);
@@ -20,4 +20,4 @@ class Translation {
     }
 }
 
-module.exports = Translation;
+module.exports = Message;

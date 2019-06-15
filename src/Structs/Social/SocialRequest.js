@@ -5,9 +5,10 @@ const Message = require('./Message.js');
 const ratelimit = 1000; // 1 second
 const timeoutPeriod = 3000; // 3 seconds
 
-class RequestQueue {
+class SocialRequest {
     constructor() {
         this.queue = [];
+
         this.lastRequest;
         this.sendInterval;
 
@@ -22,11 +23,11 @@ class RequestQueue {
         this.ws.on('open', () => this.nextRequest());
     }
 
-    addRequest(user, resolve, reject) {
-        const existing = this.queue.find(r => r.user === user);
+    addRequest(data, resolve, reject) {
+        const existing = this.queue.find(r => r.endpoint === data.endpoint && r.query === data.query);
         if (existing) return existing.addListener(resolve, reject);
 
-        const req = new Request(user);
+        const req = new Request(data.endpoint, data.query);
         req.addListener(resolve, reject);
         this.queue.push(req);
 
@@ -39,7 +40,8 @@ class RequestQueue {
         if (!req || this.ws.readyState === WebSocket.CONNECTING) return this.nextRequest();
         if (this.ws.readyState === WebSocket.CLOSING || this.ws.readyState === WebSocket.CLOSED) return this.connect();
 
-        this.ws.send(Message.encode(['r', ['profile', req.user, '', null]]));
+
+        this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '', null ]]));
 
         req.timeout = setTimeout(() => {
             req.reject('timeout. Player may not exist');
@@ -51,13 +53,15 @@ class RequestQueue {
     }
 
     message(buf) {
-        const data = Message.decode(buf)[1][2];
+        const data = Message.decode(buf);
         if (!data) return;
 
-        const req = this.queue.find(i => i.user === data.player_name);
+        const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan'].includes(data[1][1]);
+
+        const req = this.queue.find(r => r.endpoint === data[1][0] && `${prefix ? 'player_' : ''}${r.query}` === data[1][1]);
         if (!req) return;
 
-        req.resolve(data);
+        req.resolve(data[1][2]);
         clearTimeout(req.timeout);
         this.queue = this.queue.filter(r => r !== req);
     }
@@ -69,4 +73,4 @@ class RequestQueue {
 
 }
 
-module.exports = RequestQueue;
+module.exports = SocialRequest;

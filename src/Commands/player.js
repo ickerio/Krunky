@@ -59,7 +59,7 @@ class PlayerCommand extends Command {
 
             message.channel.send(attachment);
         } catch (error) {
-            message.reply(error);
+            message.reply('Error while fetching player');
         }
     }
 
