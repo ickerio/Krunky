@@ -6,6 +6,7 @@ const { createCanvas } = require('canvas');
 // Init Canvas.
 const canvas = createCanvas(400, 400);
 const context = canvas.getContext('2d');
+
 const titleFontSizePx = 25;
 const statFontSizePx = 20;
 const padLeft = 10;
@@ -13,6 +14,8 @@ const padRight = 10;
 const padTop = 44;
 const padBottom = 6;
 const padVertical = 15;
+const progressBarWidth = 150;
+const progressPadLeft = 30;
 
 const date = new Date();
 const social = new Social();
@@ -58,9 +61,15 @@ class PlayerCommand extends Command {
     _renderPlayerInfo(data) {
         context.font = `${titleFontSizePx}px FFF Forward`;
         context.fillStyle = '#000000';
-        context.fillText(`${data.name}'s Stats`, padLeft, padTop);
+        context.fillText(data.name, padLeft, padTop);
 
-        this._renderStatRow('Level:'        , data.level,               0);
+        this._renderStatRow('Level:', '', 0);
+        // Create percentage bar.
+        context.fillStyle = '#202020';
+        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
+        context.fillStyle = '#F2F202';
+        context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft + progressBarWidth * 0.025, 10 + padTop + 0.36 * statFontSizePx + padVertical, progressBarWidth * 0.95 * this._findScore(data.score), statFontSizePx * 0.8 * 0.7);
+
         this._renderStatRow('Kills:'        , data.kills,               1);
         this._renderStatRow('Deaths:'       , data.deaths,              2);
         this._renderStatRow('K/D:'          , data.kdr,                 3);
@@ -87,7 +96,13 @@ class PlayerCommand extends Command {
         context.fillStyle = '#606060';
         context.fillText(title, padLeft, 10 + padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
         context.fillStyle = '#000000';
-        context.fillText(stat, canvas.width - padRight - context.measureText(stat).width, padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
+        context.fillText(stat, canvas.width - padRight - context.measureText(stat).width, 10 + padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
+    }
+
+    _findScore(score) {
+        var levelDecimal = 0.03 * Math.sqrt(score);
+        var level = Math.floor(levelDecimal);
+        return Math.round(levelDecimal - level);
     }
 }
 
