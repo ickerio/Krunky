@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
+const Cache = require('../Structs/Cache/Cache.js');
 const { createCanvas, Image } = require('canvas');
 
 const Command = require('../Structs/Command.js');
@@ -27,6 +28,7 @@ const imageBorderThickness = 3;
 const separatorWidth = 4;
 
 const social = new Social();
+const cache = new Cache(60 * 1000);
 
 // Load krunker images.
 
@@ -48,6 +50,8 @@ class PlayerCommand extends Command {
     }
 
     async run(message, args) {
+        if (cache.has(args.name)) return message.channel.send(cache.get(args.name));
+
         try {
             const data = await social.getUser(args.name);
 
@@ -56,6 +60,7 @@ class PlayerCommand extends Command {
             this.drawPlayerInfo(data);
 
             const attachment = await new Discord.Attachment(canvas.toBuffer(), args.name + '-Krunky.png');
+            cache.set(args.name, attachment);
 
             message.channel.send(attachment);
         } catch (error) {
