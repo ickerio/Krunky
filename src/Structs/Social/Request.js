@@ -1,6 +1,7 @@
 class Request {
-    constructor(user) {
-        this.user = user;
+    constructor(endpoint, query) {
+        this.endpoint = endpoint;
+        this.query = query;
         this.timeout;
 
         this.resolves = [];
