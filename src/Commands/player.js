@@ -44,7 +44,7 @@ class PlayerCommand extends Command {
 
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(JSON.stringify(error));
+            message.reply(error);
         }
     }
 

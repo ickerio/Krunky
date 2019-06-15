@@ -42,7 +42,7 @@ class RequestQueue {
         this.ws.send(Message.encode(['r', ['profile', req.user, '', null]]));
 
         req.timeout = setTimeout(() => {
-            req.rejects.forEach(r => r());
+            req.reject('Timeout. Player may not exist');
             this.queue = this.queue.filter(r => r !== req);
         }, timeoutPeriod);
 
