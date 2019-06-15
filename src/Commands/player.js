@@ -6,7 +6,7 @@ const { createCanvas } = require('canvas');
 // Init Canvas.
 const canvas = createCanvas(400, 400);
 const context = canvas.getContext('2d');
-const titleFontSizePx = 30;
+const titleFontSizePx = 25;
 const statFontSizePx = 20;
 const padLeft = 10;
 const padRight = 10;
@@ -60,15 +60,14 @@ class PlayerCommand extends Command {
         context.fillStyle = '#000000';
         context.fillText(`${data.name}'s Stats`, padLeft, padTop);
 
-        this._renderStatRow('Score:'        , data.score,               0);
-        this._renderStatRow('Level:'        , data.level,               1);
-        this._renderStatRow('Kills:'        , data.kills,               2);
-        this._renderStatRow('Deaths:'       , data.deaths,              3);
-        this._renderStatRow('K/D:'          , data.kdr,                 4);
-        this._renderStatRow('Games Played:' , data.totalGamesPlayed,    5);
-        this._renderStatRow('Games Won:'    , data.wins,                6);
-        this._renderStatRow('W/L:'          , data.wl,                  7);
-        this._renderStatRow('Time Played:'  , data.playTime,            8);
+        this._renderStatRow('Level:'        , data.level,               0);
+        this._renderStatRow('Kills:'        , data.kills,               1);
+        this._renderStatRow('Deaths:'       , data.deaths,              2);
+        this._renderStatRow('K/D:'          , data.kdr,                 3);
+        this._renderStatRow('Games Played:' , data.totalGamesPlayed,    4);
+        this._renderStatRow('Games Won:'    , data.wins,                5);
+        this._renderStatRow('W/L:'          , data.wl,                  6);
+        this._renderStatRow('Time Played:'  , data.playTime,            7);
 
         context.font = '15px FFF Forward';
         context.fillStyle = '#b0b0b0';
@@ -86,7 +85,7 @@ class PlayerCommand extends Command {
     _renderStatRow(title, stat, rowIndex) {
         context.font = `${statFontSizePx}px FFF Forward`;
         context.fillStyle = '#606060';
-        context.fillText(title, padLeft, padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
+        context.fillText(title, padLeft, 10 + padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
         context.fillStyle = '#000000';
         context.fillText(stat, canvas.width - padRight - context.measureText(stat).width, padTop + (rowIndex + 1) * (statFontSizePx + padVertical));
     }
