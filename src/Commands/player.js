@@ -63,7 +63,7 @@ class PlayerCommand extends Command {
         context.fillStyle = '#000000';
         context.fillText(data.name, padLeft, padTop);
 
-        this._renderStatRow('Level:', '', 0);
+        this._renderStatRow('Level:', `${data.level}`, 0);
         // Create percentage bar.
         context.fillStyle = '#202020';
         context.fillRect(padLeft + context.measureText('Level:').width + progressPadLeft, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
@@ -102,7 +102,7 @@ class PlayerCommand extends Command {
     _findScore(score) {
         var levelDecimal = 0.03 * Math.sqrt(score);
         var level = Math.floor(levelDecimal);
-        return Math.round(levelDecimal - level);
+        return levelDecimal - level;
     }
 }
 
