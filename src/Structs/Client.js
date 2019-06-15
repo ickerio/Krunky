@@ -18,6 +18,7 @@ class KrunkyClient extends Discord.Client {
         this.user.setActivity(...this.config.GAME);
     }
 
+    
     processMessage(message) {
         if(message.content.startsWith(this.user.toString())) return message.reply(`**${this.config.PREFIX}** is my prefix`);
     
