@@ -47,7 +47,7 @@ class Social {
             totalGamesPlayed: data.player_games_played,
             wins: data.player_wins,
             loses: data.player_games_played - data.player_wins,
-            wl: (data.player_wins / data.player_games_played || 0).toFixed(2),
+            wl: (data.player_wins / (data.player_games_played - data.player_wins) || 0).toFixed(2), 
             playTime: this.getPlayTime(data),
             krunkies: data.player_funds,
             clan: data.player_clan ? data.player_clan : 'No Clan',
