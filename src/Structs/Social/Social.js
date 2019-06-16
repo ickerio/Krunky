@@ -17,7 +17,7 @@ class Social {
 
     getRawLeaderboard(type) {
         return new Promise((resolve, reject) => {
-            if (!['score', 'kills', 'timeplayed', 'funds', 'clan'].includes(type)) return reject('not a valid type');
+            if (!['score', 'kills', 'timeplayed', 'funds'/*, 'clan'*/].includes(type)) return reject('not a valid type');
             const data = { endpoint: 'leaders', query: type };
             this.playerQueue.addRequest(data, resolve, reject);
         });

@@ -3,6 +3,8 @@ const fs = require('fs');
 const { createCanvas, Image } = require('canvas');
 
 const titleFontSizePx = 20;
+const lbTitleFontSizePx = 30;
+const lbTitleFontSize2Px = 22;
 const titleFontSize2Px = 10;
 const statFontSizePx = 20;
 const padLeft = 10;
@@ -46,7 +48,18 @@ class Canvas {
     async drawPlayerImage(data, message) {
         this.drawBackground();
         await this.drawAvatar(message);
-        this.drawPlayerInfo(data);
+        this.drawPlayerStats(data);
+        this.drawFooter();
+
+        return this.canvas.toBuffer();
+    }
+
+    async drawLeaderboardImage(board, data, message)
+    {
+        this.drawBackground();
+        this.drawLeaderboardTitle(board);
+        await this.drawLeaderboardList(board, data, message);
+        this.drawFooter();
 
         return this.canvas.toBuffer();
     }
@@ -70,7 +83,7 @@ class Canvas {
         await this.context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
     }
 
-    drawPlayerInfo(data) {
+    drawPlayerStats(data) {
         // Draw player name.
         this.context.font = `${ data.name.length < 10  ? titleFontSizePx : titleFontSize2Px }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
@@ -91,6 +104,11 @@ class Canvas {
         this.drawStatRow('W/L:'          , data.wl,                  5);
         this.drawStatRow('Time Played:'  , data.playTime,            6);
 
+        
+    }
+
+    drawFooter()
+    {
         this.context.font = '15px FFF Forward';
         this.context.fillStyle = '#b0b0b0';
 
@@ -104,10 +122,10 @@ class Canvas {
      * @param {string} stat - The statistic's value
      * @param {int} rowIndex - The row number of the statistic, indicating how far down it will be displayed in the canvas
      */
-    drawStatRow(title, stat, rowIndex) {
+    drawStatRow(title, stat, rowIndex, xOffset = 0) {
         this.context.font = `${statFontSizePx}px FFF Forward`;
         this.context.fillStyle = '#606060';
-        this.context.fillText(title, padLeft, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
+        this.context.fillText(title, padLeft + xOffset, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
         this.context.fillStyle = '#000000';
         this.context.fillText(stat, this.canvas.width - padRight - this.context.measureText(stat).width, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
     }
@@ -118,25 +136,32 @@ class Canvas {
             titleBarHeight / 2 - imageSize / 2 - 4, 
             imageSize, imageSize);
 
-        // Get abbreviation for coin amount.
-        let text = '';
-        if (data.krunkies >= 1e6) {
-            text = Math.floor(data.krunkies / 1e5) / 10 + 'M';
-        }
-        else if (data.krunkies >= 1e3) {
-            text = Math.floor(data.krunkies / 1e2) / 10 + 'k';
-        }
-        else {
-            text = data.krunkies;
-        }
+        
 
         // Calculate the xOffset before the font is changed.
         const xOffset = padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth;
         this.context.font = `${ titleFontSizePx }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(text, xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
+        this.context.fillText(this.abbreviateKrunkCoins(data.krunkies), xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
 
         return xOffset + this.context.measureText(data.krunkies).width;
+    }
+
+    abbreviateKrunkCoins(krunkies)
+    {
+        // Get abbreviation for coin amount.
+        let text = '';
+        if (krunkies >= 1e6) {
+            text = Math.floor(krunkies / 1e5) / 10 + 'M';
+        }
+        else if (krunkies >= 1e3) {
+            text = Math.floor(krunkies / 1e2) / 10 + 'k';
+        }
+        else {
+            text = krunkies;
+        }
+
+        return text;
     }
 
     drawLevelProgress(data, xOffset) {
@@ -167,6 +192,46 @@ class Canvas {
         const levelDecimal = 0.03 * Math.sqrt(score);
         const level = Math.floor(levelDecimal);
         return levelDecimal - level;
+    }
+
+    drawLeaderboardTitle(board)
+    {
+        this.context.font = `${board.length < 8  ? lbTitleFontSizePx : lbTitleFontSize2Px}px FFF Forward`;
+        this.context.fillStyle = '#FFFFFF';
+        this.context.fillText(board.charAt(0).toUpperCase() + board.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
+    }
+
+    async drawLeaderboardList(board, data, message)
+    {
+        switch(board)
+        {
+        case 'funds':
+            this.drawStatRow('', 'Krunkies', 0);
+            break;
+        }
+        
+
+        for(let i = 0; i < 7; i++)
+        {
+            this.context.fillStyle = '#1a1f26';
+            this.context.fillRect(padLeft - imageBorderThickness, 2 + statFontSizePx + titleBarHeight + (i + 1) * (statFontSizePx + padVertical) - imageBorderThickness, 
+                statFontSizePx + imageBorderThickness * 2, statFontSizePx + imageBorderThickness * 2);
+
+            const imageData = await fetch(message.author.avatarURL.replace(/(size=)[^&]+/, '$1' + imageSize));
+            const img = new Image();
+            img.src = await imageData.buffer();
+            await this.context.drawImage(img, padLeft, 2 + statFontSizePx + titleBarHeight + (i + 1) * (statFontSizePx + padVertical),
+                statFontSizePx, statFontSizePx);
+
+            switch(board)
+            {
+            case 'funds':
+                this.drawStatRow(data[i].player_name, this.abbreviateKrunkCoins(data[i].player_funds), i + 1, padLeft + statFontSizePx + padHorizontal);
+                break;
+            }
+            
+            
+        }
     }
 } 
 
