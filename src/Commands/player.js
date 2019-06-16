@@ -32,7 +32,7 @@ class PlayerCommand extends Command {
 
         try {
             const data = await social.getUser(args.name);
-            const buffer = await renderer.drawPlayer(data, message);
+            const buffer = await renderer.drawPlayerImage(data, message);
             const attachment = await new Discord.Attachment(buffer, args.name + '-Krunky.png');
 
             cache.set(args.name, attachment);

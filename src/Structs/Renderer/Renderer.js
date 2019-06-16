@@ -11,12 +11,18 @@ const padTop = 44;
 const padBottom = 6;
 const padVertical = 15;
 const padHorizontal = 10;
-const progressBarWidth = 150;
+const progressBarWidth = 50;
+const progressBarInner = 2;
 const titleBarHeight = 60;
 const imageSize = 32;
 const imagePadRight = 10;
 const imageBorderThickness = 3;
 const separatorWidth = 4;
+
+
+const imageData = fs.readFileSync('./res/kr-icon.png');
+const img = new Image();
+img.src = imageData;
 
 class Canvas {
     constructor(){
@@ -24,7 +30,7 @@ class Canvas {
         this.context = this.canvas.getContext('2d');
     }
 
-    async drawPlayer(data, message) {
+    async drawPlayerImage(data, message) {
         this.drawBackground();
         await this.drawAvatar(message);
         this.drawPlayerInfo(data);
@@ -61,27 +67,16 @@ class Canvas {
         this.context.fillStyle = '#a0a0a0';
         this.context.fillRect(padLeft + imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
 
-        this.drawKrunkCoins(data);
+        const xOffset = this.drawKrunkCoins(data);
+        this.drawLevelProgress(data, xOffset);
 
-        // Draw player level.
-        this.drawStatRow('Level:', `${data.level}`, 0);
-        
-        // Create percentage bar.
-        this.context.fillStyle = '#202020';
-        this.context.fillRect(padLeft + this.context.measureText('Level:').width + padHorizontal, 10 + padTop + 0.2 * statFontSizePx + padVertical, progressBarWidth, statFontSizePx * 0.8);
-        this.context.fillStyle = '#F2F202';
-        this.context.fillRect(padLeft + this.context.measureText('Level:').width + padHorizontal + progressBarWidth * 0.025, 
-            10 + padTop + 0.36 * statFontSizePx + padVertical, 
-            progressBarWidth * 0.95 * this.getLevelProgress(data.score), 
-            statFontSizePx * 0.8 * 0.7);
-
-        this.drawStatRow('Kills:'        , data.kills,               1);
-        this.drawStatRow('Deaths:'       , data.deaths,              2);
-        this.drawStatRow('K/D:'          , data.kdr,                 3);
-        this.drawStatRow('Games Played:' , data.totalGamesPlayed,    4);
-        this.drawStatRow('Games Won:'    , data.wins,                5);
-        this.drawStatRow('W/L:'          , data.wl,                  6);
-        this.drawStatRow('Time Played:'  , data.playTime,            7);
+        this.drawStatRow('Kills:'        , data.kills,               0);
+        this.drawStatRow('Deaths:'       , data.deaths,              1);
+        this.drawStatRow('K/D:'          , data.kdr,                 2);
+        this.drawStatRow('Games Played:' , data.totalGamesPlayed,    3);
+        this.drawStatRow('Games Won:'    , data.wins,                4);
+        this.drawStatRow('W/L:'          , data.wl,                  5);
+        this.drawStatRow('Time Played:'  , data.playTime,            6);
 
         this.context.font = '15px FFF Forward';
         this.context.fillStyle = '#b0b0b0';
@@ -105,9 +100,7 @@ class Canvas {
     }
 
     drawKrunkCoins(data) {
-        const imageData = fs.readFileSync('./res/kr-icon.png');
-        const img = new Image();
-        img.src = imageData;
+        
         this.context.drawImage(img, padLeft + imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
             titleBarHeight / 2 - imageSize / 2, imageSize, imageSize);
 
@@ -122,8 +115,25 @@ class Canvas {
             text = data.krunkies;
         }
 
+        // Calculate the xOffset before the font is changed.
+        const xOffset = padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth;
+        this.context.font = `${ titleFontSizePx }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(text, padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth, padTop);
+        this.context.fillText(text, xOffset, padTop);
+
+        return xOffset + this.context.measureText(data.krunkies).width;
+    }
+
+    drawLevelProgress(data, xOffset) {
+        
+        // Create percentage bar.
+        this.context.fillStyle = '#202020';
+        this.context.fillRect(xOffset + padLeft, titleBarHeight / 2, progressBarWidth, titleBarHeight / 4);
+        this.context.fillStyle = '#F2F202';
+        this.context.fillRect(xOffset + padLeft + progressBarInner, 
+            titleBarHeight / 2 + progressBarInner, 
+            progressBarWidth - 2 * progressBarInner, 
+            titleBarHeight / 4 - 2 * progressBarInner);
     }
 
     getLevelProgress(score) {
