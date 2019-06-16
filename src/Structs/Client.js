@@ -35,7 +35,7 @@ class KrunkyClient extends Discord.Client {
         if (!command) return;
     
         if (!command.channelTypes.includes(message.channel.type)) return;
-        if (command.ownerOnly && !this.config.OWNERS.includes( message.author.id)) return;
+        if (command.ownerOnly && !(this.config.OWNERS.includes(message.author.id))) return;
         
         // Translate args array to object
         const argsObj = {};
