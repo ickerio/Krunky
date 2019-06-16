@@ -30,7 +30,7 @@ class HelpCommand extends Command {
         ].join('\n');
 
         const embed = new RichEmbed()
-            .setAuthor('Krunker.io discord bot', undefined, constants.inviteBotUrl)
+            .setAuthor('Krunker.io discord bot', constants.embedImages.embedHeader, constants.inviteBotUrl)
             .setDescription(desc)
             .setFooter('ickerio#1498 & JellyAlex#4668', constants.embedImages.helpFooter)
             .setThumbnail(constants.embedImages.helpThumbnail)
