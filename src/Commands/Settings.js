@@ -15,7 +15,7 @@ class SettingsCommand extends Command {
             type: 'Utility',
             usage: 'settings <optional setting name>',
             alliases: [],
-            ownerOnly: true,
+            ownerOnly: false,
             channelTypes: ['text']
         });
     }
@@ -27,14 +27,16 @@ class SettingsCommand extends Command {
         message.channel.send('An error occoured changing settings');
     }
 
+    // List all settings
     async displayAllOptions(message) {
         if (message.member.permissions.has('ADMINISTRATOR')) this.displayGuildOptions(message);
         this.displayUserOptions(message);
     }
 
+    // User settings
     async displayUserOptions(message) {
         const embed = new RichEmbed()
-            .setAuthor('Krunky User Settings')
+            .setAuthor('Krunky User Settings', this.client.constants.embedImages.embedHeader)
             .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
@@ -42,15 +44,16 @@ class SettingsCommand extends Command {
         this.client.database.settings
             .filter(set => set.type === 'User')
             .forEach(set => 
-                embed.addField('\u200B', `**${set.displayName}**\n\`${this.client.config.PREFIX}settings ${set.usage}\`\n${set.description}`)
+                embed.addField(`${this.client.config.PREFIX}settings ${set.usage}`, set.description)
             );
         
         message.channel.send(embed);
     }
 
+    // Guild settings
     async displayGuildOptions(message) {
         const embed = new RichEmbed()
-            .setAuthor('Krunky Admin Panel')
+            .setAuthor('Krunky Admin Panel', this.client.constants.embedImages.embedHeader)
             .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
@@ -58,12 +61,13 @@ class SettingsCommand extends Command {
         this.client.database.settings
             .filter(set => set.type === 'Guild')
             .forEach(set => 
-                embed.addField(set.displayName, `\`${this.client.config.PREFIX}settings ${set.usage}\``)
+                embed.addField(`${this.client.config.PREFIX}settings ${set.usage}`, set.description)
             );
         
         message.channel.send(embed);
     }
 
+    // Specify one setting
     async displayOption(message, option) {
         const setting = this.client.database.settings.find(set => set.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
@@ -71,7 +75,7 @@ class SettingsCommand extends Command {
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
         const embed = new RichEmbed()
-            .setAuthor(`Krunky ${setting.type === 'Guild' ? 'Admin Panel' : 'User Settings'} - ${setting.displayName} `)
+            .setAuthor(`Krunky ${setting.type === 'Guild' ? 'Admin Panel' : 'User Settings'} - ${setting.displayName}`, this.client.constants.embedImages.embedHeader)
             .setDescription(setting.description)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
@@ -80,12 +84,13 @@ class SettingsCommand extends Command {
         await embed.addField('Current', current[setting.dbRow]);
 
         embed
-            .addField('Update', `${this.client.config.PREFIX}settings ${setting.usage} <parameter>`)
+            .addField('Update', `${this.client.config.PREFIX}settings ${setting.usage} <${setting.displayName.toLowerCase()}>`)
             .addField('Valid settings', setting.valid);
 
         message.channel.send(embed);
     }
 
+    // Change a setting
     async changeOption(message, option, value) {
         const setting = this.client.database.settings.find(set => set.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
