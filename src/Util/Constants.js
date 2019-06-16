@@ -1,5 +1,5 @@
 module.exports = (client) => { return {
-    embedColour: '#FEC400',
+    embedColour: '#FFCA18',
     inviteBotUrl: `https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=281600`,
     devServerUrl: 'https://discord.gg/zJx726N',
     embedImages: {
