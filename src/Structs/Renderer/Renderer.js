@@ -49,15 +49,17 @@ class Canvas {
         this.drawBackground();
         await this.drawAvatar(message);
         this.drawPlayerStats(data);
+        this.drawFooter();
 
         return this.canvas.toBuffer();
     }
 
-    drawLeaderboardImage(board, data, message)
+    async drawLeaderboardImage(board, data, message)
     {
         this.drawBackground();
         this.drawLeaderboardTitle(board);
-        this.drawLeaderboardList(data);
+        await this.drawLeaderboardList(board, data, message);
+        this.drawFooter();
 
         return this.canvas.toBuffer();
     }
@@ -102,6 +104,11 @@ class Canvas {
         this.drawStatRow('W/L:'          , data.wl,                  5);
         this.drawStatRow('Time Played:'  , data.playTime,            6);
 
+        
+    }
+
+    drawFooter()
+    {
         this.context.font = '15px FFF Forward';
         this.context.fillStyle = '#b0b0b0';
 
@@ -129,25 +136,32 @@ class Canvas {
             titleBarHeight / 2 - imageSize / 2 - 4, 
             imageSize, imageSize);
 
-        // Get abbreviation for coin amount.
-        let text = '';
-        if (data.krunkies >= 1e6) {
-            text = Math.floor(data.krunkies / 1e5) / 10 + 'M';
-        }
-        else if (data.krunkies >= 1e3) {
-            text = Math.floor(data.krunkies / 1e2) / 10 + 'k';
-        }
-        else {
-            text = data.krunkies;
-        }
+        
 
         // Calculate the xOffset before the font is changed.
         const xOffset = padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth;
         this.context.font = `${ titleFontSizePx }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(text, xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
+        this.context.fillText(this.abbreviateKrunkCoins(data.krunkies), xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
 
         return xOffset + this.context.measureText(data.krunkies).width;
+    }
+
+    abbreviateKrunkCoins(krunkies)
+    {
+        // Get abbreviation for coin amount.
+        let text = '';
+        if (krunkies >= 1e6) {
+            text = Math.floor(krunkies / 1e5) / 10 + 'M';
+        }
+        else if (krunkies >= 1e3) {
+            text = Math.floor(krunkies / 1e2) / 10 + 'k';
+        }
+        else {
+            text = krunkies;
+        }
+
+        return text;
     }
 
     drawLevelProgress(data, xOffset) {
@@ -187,11 +201,36 @@ class Canvas {
         this.context.fillText(board.charAt(0).toUpperCase() + board.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
     }
 
-    drawLeaderboardList(data)
+    async drawLeaderboardList(board, data, message)
     {
-        for(let i = 0; i < 10; i++)
+        switch(board)
         {
-            this.drawStatRow(data[i].player_name, '(blank)', i, 30);
+        case 'funds':
+            this.drawStatRow('', 'Krunkies', 0);
+            break;
+        }
+        
+
+        for(let i = 0; i < 7; i++)
+        {
+            this.context.fillStyle = '#1a1f26';
+            this.context.fillRect(padLeft - imageBorderThickness, 2 + statFontSizePx + titleBarHeight + (i + 1) * (statFontSizePx + padVertical) - imageBorderThickness, 
+                statFontSizePx + imageBorderThickness * 2, statFontSizePx + imageBorderThickness * 2);
+
+            const imageData = await fetch(message.author.avatarURL.replace(/(size=)[^&]+/, '$1' + imageSize));
+            const img = new Image();
+            img.src = await imageData.buffer();
+            await this.context.drawImage(img, padLeft, 2 + statFontSizePx + titleBarHeight + (i + 1) * (statFontSizePx + padVertical),
+                statFontSizePx, statFontSizePx);
+
+            switch(board)
+            {
+            case 'funds':
+                this.drawStatRow(data[i].player_name, this.abbreviateKrunkCoins(data[i].player_funds), i + 1, padLeft + statFontSizePx + padHorizontal);
+                break;
+            }
+            
+            
         }
     }
 } 
