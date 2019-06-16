@@ -16,7 +16,7 @@ class PlayerCommand extends Command {
         super(client, {
             name: 'Player',
             useName: 'player',
-            description: 'Gets stats on a given player',
+            description: 'Shows player stats, levelling and funds',
             args: { name: {required: true }},
     
             type: 'Krunker',
