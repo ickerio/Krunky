@@ -36,9 +36,11 @@ class HelpCommand extends Command {
             .setThumbnail(constants.embedImages.helpThumbnail)
             .setColor(constants.embedColour);
 
-        this.client.commands.forEach(command => {
-            if (command.name !== 'Help' && command.ownerOnly != true) embed.addField(this.client.config.PREFIX + command.usage, command.description);
-        });
+        this.client.commands
+            .filter(command => command.name !== 'Help' && command.ownerOnly != true)
+            .forEach(command => 
+                embed.addField(this.client.config.PREFIX + command.usage, command.description)
+            );
             
         await message.channel.send(embed);
     }
