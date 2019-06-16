@@ -2,12 +2,14 @@ const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
 const { log } = require('../Util/Util.js');
 const Constants = require('../Util/Constants.js');
+const Database = require('../Structs/Database/Database.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
         super(options);
 
         this.config = options.config;
+        this.database = new Database();
 
         this.on('ready', this.nowReady);
         this.on('message', this.processMessage);

@@ -1,5 +1,6 @@
 # Private configuration
 config.json
+dat
 
 # Apple
 .DS_Store
