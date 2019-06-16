@@ -1,11 +1,6 @@
 {
-  "TOKEN": "Discord Token",
-  "OWNER": "Owner ID",
-
-  "PREFIX": "?",
-  "COLOUR": "#92a8d1",
-  "EMBED_FOOTER": "Krunky",
-
-  "DEFAULT_SERVER": "Default Server ID",
-  "GAME": ['name', {type: ''}]
+    "TOKEN": "Discord Token",
+    "OWNER": ["owner 1', "owner 2"],
+    "PREFIX": "?",
+    "GAME": ["name", {type: ""}]
 }

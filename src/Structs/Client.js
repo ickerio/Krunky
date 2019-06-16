@@ -20,7 +20,7 @@ class KrunkyClient extends Discord.Client {
 
     
     processMessage(message) {
-        if(message.content.startsWith(this.user.toString())) return message.reply(`**${this.config.PREFIX}** is my prefix`);
+        if(message.content.startsWith(this.user.toString())) return message.channel.send(`\`${this.config.PREFIX}]\` is my prefix`);
     
         // Ignore messages if statements
         if (!message.content.startsWith(this.config.PREFIX)) return;
@@ -34,14 +34,14 @@ class KrunkyClient extends Discord.Client {
         const command = this.commands.get(call) || this.commands.get(this.alliases.get(call));
         if (!command) return;
     
-        if (!command.channelTypes.includes(message.channel.type)) return;
-        if (command.ownerOnly && !this.config.OWNERS.includes( message.author.id)) return;
+        if (!command.channelTypes.includes(message.channel.type)) return message.channel.send('This command cannot be used in this channel type');
+        if (command.ownerOnly && !(this.config.OWNERS.includes(message.author.id))) return;
         
         // Translate args array to object
         const argsObj = {};
         let index = 0;
         for (const [key, value] of Object.entries(command.args)) {
-            if (value.required && !args[index]) return message.reply(`wrong arguments given. Use \`${this.config.PREFIX}${command.usage}\``);
+            if (value.required && !args[index]) return message.channel.send(`Wrong arguments given. Use \`${this.config.PREFIX}${command.usage}\``);
             argsObj[key] = args[index];
             index++;
         }
@@ -51,7 +51,7 @@ class KrunkyClient extends Discord.Client {
         try {
             command.run(message, argsObj);
         } catch(error) {
-            message.reply('an unknown error occoured running the command.');
+            message.channel.send(`An unknown error occoured whilst running \`${command.name}\` for ${message.author.tag}`);
             log(`Error running ${command.name}`);
             log(error, {simple: true });
         }
