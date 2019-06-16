@@ -155,7 +155,12 @@ class Canvas {
             titleBarHeight / 4 - 2 * progressBarInner);
 
         this.context.drawImage(this.levelIcons[( Math.floor( 0.03 * Math.sqrt(data.score) ) - 1) / 3 - 1], 
-            xOffset + 2 * padHorizontal + separatorWidth, titleBarHeight / 4 - imageSize / 2, levelImageSize, levelImageSize);
+            xOffset + padHorizontal + separatorWidth, titleBarHeight / 4 - imageSize / 2, levelImageSize, levelImageSize);
+        
+        this.context.font = `${Math.floor(titleFontSizePx * 0.8)}px FFF Forward`;
+        this.context.fillStyle = '#FFFFFF';
+        this.context.fillText(`LVL ${data.level}`, 
+            xOffset + padHorizontal + separatorWidth + levelImageSize, titleBarHeight / 2);
     }
 
     getLevelProgress(score) {
