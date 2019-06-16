@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
 const { log } = require('../Util/Util.js');
+const Constants = require('../Util/Constants.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
@@ -15,6 +16,7 @@ class KrunkyClient extends Discord.Client {
 
     nowReady() {
         log(`Logged in as ${this.user.tag}!`, this.shard);
+        this.constants = Constants(this);
         this.user.setActivity(...this.config.GAME);
     }
 
