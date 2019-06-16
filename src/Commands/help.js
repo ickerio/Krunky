@@ -26,18 +26,17 @@ class AboutCommand extends Command {
         const desc = [
             `[Invite Krunky to your server](${invUrl})`,
             `[Help or suggestions](${devUrl})`,
-            'NOTE: Do not include the < > in the command'
         ].join('\n');
 
         const embed = new RichEmbed()
             .setAuthor('Krunker.io discord bot', undefined, invUrl)
             .setDescription(desc)
-            .setFooter('Made with ❤️ by @ickerio#1498 & JellyAlex#4668', footerUrl)
+            .setFooter('ickerio#1498 & JellyAlex#4668', footerUrl)
             .setThumbnail(thumbnailUrl)
             .setColor('#FEC400');
 
         this.client.commands.forEach(command => {
-            if (command.name !== 'Help' && command.ownerOnly != true) embed.addField(command.usage, command.description);
+            if (command.name !== 'Help' && command.ownerOnly != true) embed.addField(this.client.config.PREFIX + command.usage, command.description);
         });
             
         await message.channel.send(embed);
