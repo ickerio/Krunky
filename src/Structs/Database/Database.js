@@ -32,16 +32,16 @@ class Database {
 
         return this.db.run(`
         UPDATE ${setting.type}
-        SET ${setting.dbRow} = '${value}';
-        WHERE ${setting.type}.${setting.type + 'ID'} = '${id}'
-        `);
+        SET ${setting.dbRow} = ?
+        WHERE ${setting.type}.${setting.type + 'ID'} = '${id}';
+        `, value);
     }
 
     getSetting(id, key) {
         const setting = this.settings.find(set => set.usage === key);
 
         return this.db.get(`
-        SELECT ${key} FROM ${setting.type}
+        SELECT ${setting.dbRow} FROM ${setting.type}
         WHERE ${setting.type}.${setting.type + 'ID'} = '${id}';
         `);
     }

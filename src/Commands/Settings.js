@@ -16,7 +16,7 @@ class SettingsCommand extends Command {
             usage: 'settings <optional setting name>',
             alliases: [],
             ownerOnly: true,
-            channelTypes: ['dm', 'group', 'text']
+            channelTypes: ['text']
         });
     }
 
@@ -36,12 +36,13 @@ class SettingsCommand extends Command {
         const embed = new RichEmbed()
             .setAuthor('Krunky User Settings')
             .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
+            .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.settings
             .filter(set => set.type === 'User')
             .forEach(set => 
-                embed.addField(set.displayName, `\`${this.client.config.PREFIX}settings ${set.usage}\``)
+                embed.addField('\u200B', `**${set.displayName}**\n\`${this.client.config.PREFIX}settings ${set.usage}\`\n${set.description}`)
             );
         
         message.channel.send(embed);
@@ -51,6 +52,7 @@ class SettingsCommand extends Command {
         const embed = new RichEmbed()
             .setAuthor('Krunky Admin Panel')
             .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
+            .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.settings
@@ -71,9 +73,9 @@ class SettingsCommand extends Command {
         const embed = new RichEmbed()
             .setAuthor(`Krunky ${setting.type === 'Guild' ? 'Admin Panel' : 'User Settings'} - ${setting.displayName} `)
             .setDescription(setting.description)
+            .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
-        // Current field
         const current = await this.client.database.getSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage);
         await embed.addField('Current', current[setting.dbRow]);
 

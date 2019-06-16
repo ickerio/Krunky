@@ -1,6 +1,6 @@
 module.exports = [
     {
-        usage: 'krunkername',
+        usage: 'username',
         displayName: 'Krunker name',
         type: 'User',
         dbRow: 'KrunkerName',

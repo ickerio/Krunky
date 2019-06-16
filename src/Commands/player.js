@@ -17,7 +17,7 @@ class PlayerCommand extends Command {
             name: 'Player',
             useName: 'player',
             description: 'Shows player stats, levelling and funds',
-            args: { name: {required: true }},
+            args: { name: {required: false }},
     
             type: 'Krunker',
             usage: 'player <player name>',
@@ -27,18 +27,30 @@ class PlayerCommand extends Command {
         });
     }
 
-    async run(message, args) {
-        if (cache.has(args.name)) return message.channel.send(cache.get(args.name));
+    async run(message, { name }) {
+        // Check player name in database
+        if (!name) {
+            try {
+                const result = await this.client.database.getSetting(message.author.id, 'username');
+                name = result.KrunkerName;
+            } catch (error) {
+                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${this.client.config.PREFIX}settings`);
+            }
+        }
 
+        // Check image cache
+        if (cache.has(name)) return message.channel.send(cache.get(name));
+
+        // Hit API and render image
         try {
-            const data = await social.getUser(args.name);
+            const data = await social.getUser(name);
             const buffer = await renderer.drawPlayerImage(data, message);
-            const attachment = await new Discord.Attachment(buffer, args.name + '-Krunky.png');
+            const attachment = await new Discord.Attachment(buffer, name + '-Krunky.png');
 
-            cache.set(args.name, attachment);
+            cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occoured getting player ${args.name}`);
+            message.channel.send(`An error occoured getting player ${name}`);
         }
     }
 }
