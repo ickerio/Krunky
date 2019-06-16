@@ -32,7 +32,7 @@ class HelpCommand extends Command {
     
             // Only add commands they're allowed access to
             this.client.commands.forEach(command => {
-                if(!(command.ownerOnly && message.author.id !== this.client.config.OWNER))
+                if(!(command.ownerOnly && this.client.config.OWNERS.includes(message.author.id)))
                     embed.addField(command.usage,`${command.description}${command.alliases.length !== 0  ? `\nAlliases: ${command.alliases.join(', ')}` : ''}`);
             });
     
