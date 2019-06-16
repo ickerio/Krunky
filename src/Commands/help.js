@@ -25,8 +25,8 @@ class HelpCommand extends Command {
         const constants = this.client.constants;
 
         const desc = [
-            `[Invite Krunky](${constants.inviteBotUrl})`,
-            `[Dev Server](${constants.devServerUrl})`,
+            `[Invite Krunky](${constants.inviteBotUrl}) to your server`,
+            `[Dev Server](${constants.devServerUrl}) for help and suggestions`,
         ].join('\n');
 
         const embed = new RichEmbed()
