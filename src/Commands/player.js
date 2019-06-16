@@ -23,7 +23,7 @@ class PlayerCommand extends Command {
             usage: 'player <player name>',
             alliases: [],
             ownerOnly: false,
-            channelTypes: ['dm', 'group', 'text']
+            channelTypes: ['text']
         });
     }
 
@@ -38,7 +38,7 @@ class PlayerCommand extends Command {
             cache.set(args.name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.reply('an error occoured.');
+            message.channel.send(`An error occoured getting player ${args.name}`);
         }
     }
 }
