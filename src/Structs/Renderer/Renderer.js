@@ -3,6 +3,8 @@ const fs = require('fs');
 const { createCanvas, Image } = require('canvas');
 
 const titleFontSizePx = 20;
+const lbTitleFontSizePx = 30;
+const lbTitleFontSize2Px = 22;
 const titleFontSize2Px = 10;
 const statFontSizePx = 20;
 const padLeft = 10;
@@ -46,7 +48,16 @@ class Canvas {
     async drawPlayerImage(data, message) {
         this.drawBackground();
         await this.drawAvatar(message);
-        this.drawPlayerInfo(data);
+        this.drawPlayerStats(data);
+
+        return this.canvas.toBuffer();
+    }
+
+    drawLeaderboardImage(board, data, message)
+    {
+        this.drawBackground();
+        this.drawLeaderboardTitle(board);
+        this.drawLeaderboardList(data);
 
         return this.canvas.toBuffer();
     }
@@ -70,7 +81,7 @@ class Canvas {
         await this.context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
     }
 
-    drawPlayerInfo(data) {
+    drawPlayerStats(data) {
         // Draw player name.
         this.context.font = `${ data.name.length < 10  ? titleFontSizePx : titleFontSize2Px }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
@@ -104,10 +115,10 @@ class Canvas {
      * @param {string} stat - The statistic's value
      * @param {int} rowIndex - The row number of the statistic, indicating how far down it will be displayed in the canvas
      */
-    drawStatRow(title, stat, rowIndex) {
+    drawStatRow(title, stat, rowIndex, xOffset = 0) {
         this.context.font = `${statFontSizePx}px FFF Forward`;
         this.context.fillStyle = '#606060';
-        this.context.fillText(title, padLeft, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
+        this.context.fillText(title, padLeft + xOffset, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
         this.context.fillStyle = '#000000';
         this.context.fillText(stat, this.canvas.width - padRight - this.context.measureText(stat).width, 10 + titleBarHeight + (rowIndex + 1) * (statFontSizePx + padVertical));
     }
@@ -167,6 +178,21 @@ class Canvas {
         const levelDecimal = 0.03 * Math.sqrt(score);
         const level = Math.floor(levelDecimal);
         return levelDecimal - level;
+    }
+
+    drawLeaderboardTitle(board)
+    {
+        this.context.font = `${board.length < 8  ? lbTitleFontSizePx : lbTitleFontSize2Px}px FFF Forward`;
+        this.context.fillStyle = '#FFFFFF';
+        this.context.fillText(board.charAt(0).toUpperCase() + board.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
+    }
+
+    drawLeaderboardList(data)
+    {
+        for(let i = 0; i < 10; i++)
+        {
+            this.drawStatRow(data[i].player_name, '(blank)', i, 30);
+        }
     }
 } 
 
