@@ -33,7 +33,7 @@ class Social {
         const structuredData = [];
         if (data[1][1] === 'player_clan') {
             // Data for clans (have different data layout)
-            for (const clan in data) {
+            data[1][2].forEach(clan => {
                 structuredData.push({
                     name: clan.clan_name,
                     score: clan.clan_score,
@@ -41,10 +41,10 @@ class Social {
                     membercount: clan.clan_membercount,
                     hackcount: clan.clan_hackcount
                 });
-            }
+            });
         } else {
             // Data for score, funds, kills, time and wins
-            for (const user in data) {
+            data[1][2].forEach(user => {
                 structuredData.push({
                     name: user.player_name,
                     featured: user.player_featured ? 'Yes' : 'No',
@@ -52,7 +52,7 @@ class Social {
                     attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || user.player_timeplayed || user.player_wins,
                     hacker: user.player_hack ? user.player_hack : 'No'
                 });
-            }
+            });
         }
         return structuredData;
     }
