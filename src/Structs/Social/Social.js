@@ -16,7 +16,7 @@ class Social {
         if (!board) throw new Error('Leaderboard type does not exist');
 
         const raw = await this._getRawLeaderboard(board.api);
-        return { name: board.formal, data: this.structureLeaderboard(raw) };
+        return { name: board.name, unit: board.unit, data: this.structureLeaderboard(raw) };
     }
 
     _getRawUser(user) {
@@ -93,17 +93,17 @@ class Social {
 
     createAliasMap() {
         const table = {
-            score: { alias: ['lvl', 'lvls', 'levels', 'level', 'score'], formal: 'Levels' },
-            kills: { alias: ['kills', 'kill'], formal: 'Kills' },
-            timeplayed: { alias: ['timeplayed', 'time'], formal: 'Time Played' },
-            funds: { alias: ['krunkies', 'money', 'funds'], formal: 'Krunkies' },
-            clan: { alias: ['clan', 'clans'], formal: 'Clans' }
+            score: { alias: ['lvl', 'lvls', 'levels', 'level', 'score'], name: 'Levels', unit: 'Lvl' },
+            kills: { alias: ['kills', 'kill'], name: 'Kills', unit: 'Kills' },
+            timeplayed: { alias: ['timeplayed', 'time'], name: 'Time Played', unit: '' },
+            funds: { alias: ['krunkies', 'money', 'funds'], name: 'Krunkies', unit: 'KR' },
+            clan: { alias: ['clan', 'clans'], name: 'Clans', unit: 'Score' }
         };
         
         const map = new Map();
         
         for (const [key, value] of Object.entries(table)) {
-            value.alias.forEach(v => map.set(v, { api: key, formal: value.formal }));
+            value.alias.forEach(v => map.set(v, { api: key, name: value.name, unit: value.unit }));
         }
 
         return map;
