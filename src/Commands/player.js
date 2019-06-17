@@ -27,7 +27,7 @@ class PlayerCommand extends Command {
 
     async run(message, { name }) {
         // Check for tagged user's name or authors name
-        if (!name || message.mentions.users.count) {
+        if (!name || message.mentions.users.size) {
             try {
                 const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
                 name = result.KrunkerName;
