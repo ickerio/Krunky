@@ -42,7 +42,7 @@ class HelpCommand extends Command {
                 embed.addField(message.prefix + command.usage, command.description)
             );
             
-        await message.channel.send(embed);
+        message.channel.send(embed);
     }
 }
 
