@@ -1,4 +1,4 @@
-const Krunky = require('./Structs/Client.js');
+const Krunky = require('./Client/Client.js');
 
 const client = new Krunky({
     config: require('../config.json'),

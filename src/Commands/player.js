@@ -1,12 +1,7 @@
-const Discord = require('discord.js');
+const Command = require('../Client/Command.js');
+const { Attachment } = require('discord.js');
+const Cache = require('../Util/Cache/Cache.js');
 
-const Command = require('../Structs/Command.js');
-const Social = require('../Structs/Social/Social.js');
-const Renderer = require('../Structs/Renderer/Renderer.js');
-const Cache = require('../Structs/Cache/Cache.js');
-
-const social = new Social();
-const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
 
 class PlayerCommand extends Command {
@@ -41,9 +36,9 @@ class PlayerCommand extends Command {
 
         // Hit API and render image
         try {
-            const data = await social.getUser(name);
-            const buffer = await renderer.drawPlayerImage(data, message);
-            const attachment = await new Discord.Attachment(buffer, name + '-Krunky.png');
+            const data = await this.client.social.getUser(name);
+            const buffer = await this.client.renderer.drawPlayerImage(data, message);
+            const attachment = await new Attachment(buffer, name + '-Krunky.png');
 
             cache.set(name, attachment);
             message.channel.send(attachment);

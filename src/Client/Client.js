@@ -1,15 +1,17 @@
 const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
 const { log } = require('../Util/Util.js');
+
 const Constants = require('../Util/Constants.js');
-const Database = require('../Structs/Database/Database.js');
+const Database = require('./Database/Database.js');
+const Matchmaker = require('./Matchmaker/Matchmaker.js');
+const Renderer = require('./Renderer/Renderer.js');
+const Social = require('./Social/Social.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
         super(options);
-
         this.config = options.config;
-        this.database = new Database();
 
         this.on('ready', this.nowReady);
         this.on('message', async message => await this.processMessage(message));
@@ -18,8 +20,13 @@ class KrunkyClient extends Discord.Client {
 
     nowReady() {
         log(`Logged in as ${this.user.tag}!`, this.shard);
-        this.constants = Constants(this);
         this.user.setActivity(...this.config.GAME);
+
+        this.constants = Constants(this);
+        this.database = new Database();
+        this.matchmaker = new Matchmaker();
+        this.renderer = new Renderer();
+        this.social = new Social();
     }
 
     
@@ -74,9 +81,8 @@ class KrunkyClient extends Discord.Client {
     }
 
     addEvent(f) {
-        const eventName = f.split('.')[0];
         const event = require(`../Events/${f}`);
-        this.on(eventName, event.bind(null));
+        this.on(event[0], event[1].bind(null));
         delete require.cache[require.resolve(`../Events/${f}`)];
     }
 
@@ -94,6 +100,7 @@ class KrunkyClient extends Discord.Client {
             files.forEach(file => this.addEvent(file));
         });
     }
+    
     login(token) {
         super.login(token);
     }

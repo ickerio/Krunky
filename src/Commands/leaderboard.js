@@ -1,12 +1,7 @@
-const Discord = require('discord.js');
+const Command = require('../Client/Command.js');
+const { Attachment } = require('discord.js');
+const Cache = require('../Util/Cache/Cache.js');
 
-const Cache = require('../Structs/Cache/Cache.js');
-const Command = require('../Structs/Command.js');
-const Social = require('../Structs/Social/Social.js');
-const Renderer = require('../Structs/Renderer/Renderer.js');
-
-const social = new Social();
-const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
 
 class LeaderboardCommand extends Command {
@@ -29,9 +24,9 @@ class LeaderboardCommand extends Command {
         if (cache.has(args.board)) return message.channel.send(cache.get(args.board));
 
         try {
-            const board = await social.getLeaderboard(args.board);
-            const buffer = await renderer.drawLeaderboardImage(board, message);
-            const attachment = await new Discord.Attachment(buffer, 'leaderboard-' + args.board + '-Krunky.png');
+            const board = await this.client.social.getLeaderboard(args.board);
+            const buffer = await this.client.renderer.drawLeaderboardImage(board, message);
+            const attachment = await new Attachment(buffer, 'leaderboard-' + args.board + '-Krunky.png');
 
             cache.set(args.board, attachment);
             message.channel.send(attachment);
