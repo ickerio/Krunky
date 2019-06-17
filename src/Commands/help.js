@@ -30,7 +30,7 @@ class HelpCommand extends Command {
         ].join('\n');
 
         const embed = new RichEmbed()
-            .setAuthor('Krunker.io discord bot', undefined, constants.inviteBotUrl)
+            .setAuthor('Krunker.io discord bot', constants.embedImages.embedHeader, constants.inviteBotUrl)
             .setDescription(desc)
             .setFooter('ickerio#1498 & JellyAlex#4668', constants.embedImages.helpFooter)
             .setThumbnail(constants.embedImages.helpThumbnail)
@@ -39,7 +39,7 @@ class HelpCommand extends Command {
         this.client.commands
             .filter(command => command.name !== 'Help' && command.ownerOnly != true)
             .forEach(command => 
-                embed.addField(this.client.config.PREFIX + command.usage, command.description)
+                embed.addField(message.prefix + command.usage, command.description)
             );
             
         await message.channel.send(embed);

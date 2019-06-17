@@ -1,15 +1,13 @@
 const Discord = require('discord.js');
 
-const Cache = require('../Structs/Cache/Cache.js');
 const Command = require('../Structs/Command.js');
 const Social = require('../Structs/Social/Social.js');
 const Renderer = require('../Structs/Renderer/Renderer.js');
+const Cache = require('../Structs/Cache/Cache.js');
 
 const social = new Social();
 const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
-
-// Load krunker images.
 
 class PlayerCommand extends Command {
     constructor(client) {
@@ -21,20 +19,20 @@ class PlayerCommand extends Command {
     
             type: 'Krunker',
             usage: 'player <player name>',
-            alliases: [],
+            alliases: ['p'],
             ownerOnly: false,
             channelTypes: ['text']
         });
     }
 
     async run(message, { name }) {
-        // Check player name in database
-        if (!name) {
+        // Check for tagged user's name or authors name
+        if (!name || message.mentions.users.size) {
             try {
-                const result = await this.client.database.getSetting(message.author.id, 'username');
-                name = result.KrunkerName;
+                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
+                name = result;
             } catch (error) {
-                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${this.client.config.PREFIX}settings`);
+                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`);
             }
         }
 

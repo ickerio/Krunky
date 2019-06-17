@@ -12,7 +12,7 @@ class KrunkyClient extends Discord.Client {
         this.database = new Database();
 
         this.on('ready', this.nowReady);
-        this.on('message', this.processMessage);
+        this.on('message', async message => await this.processMessage(message));
         this.on('error', process.exit);
     }
 
@@ -23,16 +23,17 @@ class KrunkyClient extends Discord.Client {
     }
 
     
-    processMessage(message) {
-        if(message.content.startsWith(this.user.toString())) return message.channel.send(`\`${this.config.PREFIX}]\` is my prefix`);
+    async processMessage(message) {
+        message.prefix = await this.database.getSetting(message.guild.id, 'prefix');
+        if(message.content.startsWith(this.user.toString())) return message.channel.send(`\`${message.prefix}\` is my prefix`);
     
         // Ignore messages if statements
-        if (!message.content.startsWith(this.config.PREFIX)) return;
+        if (!message.content.startsWith(message.prefix)) return;
         if (message.author.bot) return;
     
         // Extracts command and args
         const args = message.content.split(/\s+/g);
-        const call = args.shift().slice(this.config.PREFIX.length).toLowerCase();
+        const call = args.shift().slice(message.prefix.length).toLowerCase();
     
         // Find command and issue it
         const command = this.commands.get(call) || this.commands.get(this.alliases.get(call));
@@ -45,7 +46,7 @@ class KrunkyClient extends Discord.Client {
         const argsObj = {};
         let index = 0;
         for (const [key, value] of Object.entries(command.args)) {
-            if (value.required && !args[index]) return message.channel.send(`Wrong arguments given. Use \`${this.config.PREFIX}${command.usage}\``);
+            if (value.required && !args[index]) return message.channel.send(`Wrong arguments given. Use \`${message.prefix}${command.usage}\``);
             argsObj[key] = args[index];
             index++;
         }
@@ -74,9 +75,9 @@ class KrunkyClient extends Discord.Client {
 
     addEvent(f) {
         const eventName = f.split('.')[0];
-        const event = require(`../events/${f}`);
+        const event = require(`../Events/${f}`);
         this.on(eventName, event.bind(null));
-        delete require.cache[require.resolve(`../events/${f}`)];
+        delete require.cache[require.resolve(`../Events/${f}`)];
     }
 
     async registerCommands() {
@@ -88,7 +89,7 @@ class KrunkyClient extends Discord.Client {
     }
 
     registerEvents() {
-        readdir('./src/events/', (err, files) => {
+        readdir('./src/Events/', (err, files) => {
             if(!files) return;
             files.forEach(file => this.addEvent(file));
         });

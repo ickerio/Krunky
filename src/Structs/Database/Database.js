@@ -15,7 +15,7 @@ class Database {
 
     addUser(id) {
         this.db.run(`
-        INSERT INTO User (UserID)
+        INSERT OR IGNORE INTO User (UserID)
         VALUES (${id});
         `);
     }
@@ -37,13 +37,15 @@ class Database {
         `, value);
     }
 
-    getSetting(id, key) {
+    async getSetting(id, key) {
         const setting = this.settings.find(set => set.usage === key);
 
-        return this.db.get(`
+        const data = await this.db.get(`
         SELECT ${setting.dbRow} FROM ${setting.type}
         WHERE ${setting.type}.${setting.type + 'ID'} = '${id}';
         `);
+
+        return data[setting.dbRow];
     }
 }
 
