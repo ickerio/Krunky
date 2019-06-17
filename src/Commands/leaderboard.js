@@ -32,7 +32,6 @@ class LeaderboardCommand extends Command {
             message.channel.send(attachment);
         } catch (error) {
             message.channel.send(`An error occoured getting board ${args.board}`);
-            throw new Error(error);
         }
     }
 }
