@@ -44,7 +44,7 @@ class SocialRequest {
         this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '', null ]]));
 
         req.timeout = setTimeout(() => {
-            req.reject('timeout. Player may not exist');
+            req.reject('Timeout. Social API did not return data');
             this.queue = this.queue.filter(r => r !== req);
         }, timeoutPeriod);
 
