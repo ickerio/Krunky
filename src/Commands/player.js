@@ -28,10 +28,10 @@ class PlayerCommand extends Command {
     }
 
     async run(message, { name }) {
-        // Check player name in database
-        if (!name) {
+        // Check for tagged user's name or authors name
+        if (!name || message.mentions.users.count) {
             try {
-                const result = await this.client.database.getSetting(message.author.id, 'username');
+                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
                 name = result.KrunkerName;
             } catch (error) {
                 return message.channel.send(`No \`player name\` provided and no \`username\` set in ${this.client.config.PREFIX}settings`);
