@@ -15,8 +15,8 @@ class Social {
         const board = this.boardsAlias.get(alias);
         if (!board) throw new Error('Leaderboard type does not exist');
 
-        const raw = await this._getRawLeaderboard(board)
-        return this.structureLeaderboard(b[1][2])
+        const raw = await this._getRawLeaderboard(board.api)
+        return { name: board.formal, data: this.structureLeaderboard(b[1][2]) }
     }
 
     _getRawUser(user) {
@@ -76,18 +76,18 @@ class Social {
     }
 
     createAliasMap() {
-        const alias = {
-            score: ['lvl', 'lvls', 'levels', 'level'],
-            kills: ['kills', 'kill'],
-            timeplayed: ['timeplayed', 'time'],
-            funds: ['krunkies', 'money', 'funds'],
-            clan: ['clan', 'clans']
+        const table = {
+            score: { alias: ['lvl', 'lvls', 'levels', 'level'], formal: 'Levels' },
+            kills: { alias: ['kills', 'kill'], formal: 'Kills' },
+            timeplayed: { alias: ['timeplayed', 'time'], formal: 'Time Played' },
+            funds: { alias: ['krunkies', 'money', 'funds'], formal: 'Krunkies' },
+            clan: { alias: ['clan', 'clans'], formal: 'Clans' }
         };
         
         const map = new Map();
         
-        for (const [key, value] of Object.entries(lookup)) {
-            value.forEach(v => Map.set(v, key));
+        for (const [key, value] of Object.entries(table)) {
+            value.alias.forEach(v => Map.set(v, { api: key, formal: value.formal }));
         };
 
         return map;
