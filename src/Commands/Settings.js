@@ -14,7 +14,7 @@ class SettingsCommand extends Command {
     
             type: 'Utility',
             usage: 'settings <optional setting name>',
-            alliases: ['setting'],
+            alliases: [ 'setting' ],
             ownerOnly: false,
             channelTypes: ['text']
         });

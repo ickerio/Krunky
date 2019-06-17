@@ -9,15 +9,13 @@ const social = new Social();
 const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
 
-// Load krunker images.
-
 class LeaderboardCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'Leaderboard',
             useName: 'leaderboard',
             description: 'Shows top players for the leaderboard type\n*Types*: level, kills, wins, time, krunkies, clans.',
-            args: { board: {required: true }},
+            args: { board: { required: true }},
             
             type: 'Krunker',
             usage: 'leaderboard <board name>',
