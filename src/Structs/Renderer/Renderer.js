@@ -47,13 +47,9 @@ class Canvas {
 
     async drawPlayerImage(data, message) {
         this.drawBackground();
-        console.log('finished 1');
         await this.drawAvatar(message);
-        console.log('finished 2');
         this.drawPlayerStats(data);
-        console.log('finished 3');
         this.drawFooter();
-        console.log('finished 4');
 
         return this.canvas.toBuffer();
     }
