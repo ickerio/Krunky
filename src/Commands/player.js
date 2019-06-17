@@ -38,12 +38,13 @@ class PlayerCommand extends Command {
         try {
             const data = await this.client.social.getUser(name);
             const buffer = await this.client.renderer.drawPlayerImage(data, message);
-            const attachment = await new Attachment(buffer, name + '-Krunky.png');
+            const attachment = await new Attachment(buffer, `Krunky-player_${name}.png`);
 
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
             message.channel.send(`An error occoured getting player ${name}`);
+            throw new Error(error);
         }
     }
 }
