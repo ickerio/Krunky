@@ -49,7 +49,6 @@ class PlayerCommand extends Command {
             message.channel.send(attachment);
         } catch (error) {
             message.channel.send(`An error occoured getting player ${name}`);
-            console.log(error);
         }
     }
 }
