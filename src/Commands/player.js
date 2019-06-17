@@ -19,7 +19,7 @@ class PlayerCommand extends Command {
     
             type: 'Krunker',
             usage: 'player <player name>',
-            alliases: [],
+            alliases: ['p'],
             ownerOnly: false,
             channelTypes: ['text']
         });
