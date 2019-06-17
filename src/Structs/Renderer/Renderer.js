@@ -158,7 +158,6 @@ class Canvas {
         else {
             text = krunkies;
         }
-
         return text;
     }
 
@@ -174,10 +173,10 @@ class Canvas {
         this.context.fillStyle = '#F2F202';
         this.context.fillRect(xOffset +  2 * padHorizontal + separatorWidth + progressBarInner, 
             titleBarHeight * 0.6 + progressBarInner, 
-            (this.canvas.width - xOffset -  2 * padHorizontal - separatorWidth - padRight - 2 * progressBarInner) * this.getLevelProgress(data.score), 
+            (this.canvas.width - xOffset -  2 * padHorizontal - separatorWidth - padRight - 2 * progressBarInner) * data.levelProgress, 
             titleBarHeight / 4 - 2 * progressBarInner);
         
-        this.context.drawImage(this.levelIcons[Math.ceil(( Math.floor( 0.03 * Math.sqrt(data.score) ) - 1) / 3 - 1)], 
+        this.context.drawImage(this.levelIcons[Math.ceil(( data.level /*Math.floor( 0.03 * Math.sqrt(data.score) )*/ - 1) / 3 - 1)], 
             xOffset + padHorizontal + separatorWidth, titleBarHeight / 4 - imageSize / 2, levelImageSize, levelImageSize);
         
         this.context.font = `${Math.floor(titleFontSizePx * 0.8)}px FFF Forward`;
@@ -186,10 +185,16 @@ class Canvas {
             xOffset + padHorizontal + separatorWidth + levelImageSize, titleBarHeight / 2);
     }
 
-    getLevelProgress(score) {
-        const levelDecimal = 0.03 * Math.sqrt(score);
-        const level = Math.floor(levelDecimal);
-        return levelDecimal - level;
+    formatTimePlayed(time) {
+        if (time === undefined) return undefined;
+        let str = '';
+        const minutes = Math.floor(Math.floor(time / 1000) / 60) % 60;
+        const hours = Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) % 24;
+        const days = Math.floor(Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) / 24);
+        if (days) str += `${days}d `;
+        if (hours) str += `${hours}h `;
+        if (minutes) str += `${minutes}m`;
+        return str;
     }
 
     drawLeaderboardTitle(board)
@@ -199,16 +204,15 @@ class Canvas {
         this.context.fillText(board.charAt(0).toUpperCase() + board.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
     }
 
-    async drawLeaderboardList(board, data, message)
+    async drawLeaderboardList(board, message)
     {
-        switch(board)
+        switch(board.name)
         {
         case 'funds':
             this.drawStatRow('', 'Krunkies', 0);
             break;
         }
         
-
         for(let i = 0; i < 7; i++)
         {
             this.context.fillStyle = '#1a1f26';
@@ -221,14 +225,12 @@ class Canvas {
             await this.context.drawImage(img, padLeft, 2 + statFontSizePx + titleBarHeight + (i + 1) * (statFontSizePx + padVertical),
                 statFontSizePx, statFontSizePx);
 
-            switch(board)
+            switch(board.name)
             {
             case 'funds':
-                this.drawStatRow(data[i].player_name, this.abbreviateKrunkCoins(data[i].player_funds), i + 1, padLeft + statFontSizePx + padHorizontal);
+                this.drawStatRow(board.data[i].name, this.abbreviateKrunkCoins(board.data[i].attribute), i + 1, padLeft + statFontSizePx + padHorizontal);
                 break;
             }
-            
-            
         }
     }
 } 
