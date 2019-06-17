@@ -12,11 +12,11 @@ class Social {
     }
 
     async getLeaderboard(alias) {
-        const board = this.boardsAlias.get(alias);
+        const board = this.boardsAlias.get(alias.toLowerCase());
         if (!board) throw new Error('Leaderboard type does not exist');
 
-        const raw = await this._getRawLeaderboard(board.api)
-        return { name: board.formal, data: this.structureLeaderboard(b[1][2]) }
+        const raw = await this._getRawLeaderboard(board.api);
+        return { name: board.formal, data: this.structureLeaderboard(raw) };
     }
 
     _getRawUser(user) {
@@ -31,15 +31,30 @@ class Social {
 
     structureLeaderboard(data) {
         const structuredData = [];
-        for (const user in data) {
-            structuredData.push({
-                name: user.player_name,
-                featured: user.player_featured ? 'Yes' : 'No',
-                clan: user.player_clan ? user.player_clan : 'No Clan',
-                score: user.player_score, // May have to change this to attribute = score || krunkies || kills etc
-                hacker: user.player_hack ? user.player_hack : 'No'
-            })
+        if (data[1][1] === 'player_clan') {
+            // Data for clans (have different data layout)
+            for (const clan in data) {
+                structuredData.push({
+                    name: clan.clan_name,
+                    score: clan.clan_score,
+                    creatorname: clan.creatorname,
+                    membercount: clan.clan_membercount,
+                    hackcount: clan.clan_hackcount
+                });
+            }
+        } else {
+            // Data for score, funds, kills, time and wins
+            for (const user in data) {
+                structuredData.push({
+                    name: user.player_name,
+                    featured: user.player_featured ? 'Yes' : 'No',
+                    clan: user.player_clan ? user.player_clan : 'No Clan',
+                    attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || this.getTimePlayed(user.player_timeplayed) || user.player_wins,
+                    hacker: user.player_hack ? user.player_hack : 'No'
+                });
+            }
         }
+        return structuredData;
     }
 
     structureUser(data) {
@@ -47,7 +62,7 @@ class Social {
             name: data.player_name,
             id: data.player_id,
             score: data.player_score,
-            level: Math.max(1, Math.floor(0.03 * Math.sqrt(data.player_score))),
+            level: this.getLevel(data.player_score),
             kills: data.player_kills,
             deaths: data.player_deaths,
             kdr: (data.player_kills / data.player_deaths || 0).toFixed(2),
@@ -56,7 +71,7 @@ class Social {
             wins: data.player_wins,
             loses: data.player_games_played - data.player_wins,
             wl: (data.player_wins / (data.player_games_played - data.player_wins) || 0).toFixed(2), 
-            playTime: this.getPlayTime(data),
+            playTime: this.getTimePlayed(data.player_timeplayed),
             krunkies: data.player_funds,
             clan: data.player_clan ? data.player_clan : 'No Clan',
             featured: data.player_featured ? 'Yes' : 'No',
@@ -64,11 +79,17 @@ class Social {
         };
     }
 
-    getPlayTime(data) {
+    getLevel(score) {
+        if (score === undefined) return undefined;
+        return Math.max(1, Math.floor(0.03 * Math.sqrt(score)));
+    }
+
+    getTimePlayed(time) {
+        if (time === undefined) return undefined;
         let str = '';
-        const minutes = Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) % 60;
-        const hours = Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) % 24;
-        const days = Math.floor(Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) / 24);
+        const minutes = Math.floor(Math.floor(time / 1000) / 60) % 60;
+        const hours = Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) % 24;
+        const days = Math.floor(Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) / 24);
         if (days) str += `${days}d `;
         if (hours) str += `${hours}h `;
         if (minutes) str += `${minutes}m`;
@@ -77,7 +98,7 @@ class Social {
 
     createAliasMap() {
         const table = {
-            score: { alias: ['lvl', 'lvls', 'levels', 'level'], formal: 'Levels' },
+            score: { alias: ['lvl', 'lvls', 'levels', 'level', 'score'], formal: 'Levels' },
             kills: { alias: ['kills', 'kill'], formal: 'Kills' },
             timeplayed: { alias: ['timeplayed', 'time'], formal: 'Time Played' },
             funds: { alias: ['krunkies', 'money', 'funds'], formal: 'Krunkies' },
@@ -87,8 +108,8 @@ class Social {
         const map = new Map();
         
         for (const [key, value] of Object.entries(table)) {
-            value.alias.forEach(v => Map.set(v, { api: key, formal: value.formal }));
-        };
+            value.alias.forEach(v => map.set(v, { api: key, formal: value.formal }));
+        }
 
         return map;
     }
