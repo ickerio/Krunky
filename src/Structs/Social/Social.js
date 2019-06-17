@@ -7,7 +7,12 @@ class Social {
 
     getUser(user) {
         return this.getRawUser(user)
-            .then(d => this.simplifyUser(d));
+            .then(u => this.structureUser(u[1][2]));
+    }
+
+    getLeaderboard(board) {
+        return this.getRawLeaderboard(user)
+            .then(b => this.structureLeaderboard(b[1][2]));
     }
 
     getRawUser(user) {
@@ -15,26 +20,28 @@ class Social {
         return new Promise((resolve, reject) => this.playerQueue.addRequest(data, resolve, reject));
     }
 
-    getRawLeaderboard(type) {
+    getRawLeaderboard(board) {
         return new Promise((resolve, reject) => {
-            if (!['score', 'kills', 'timeplayed', 'funds'/*, 'clan'*/].includes(type)) return reject('not a valid type');
-            const data = { endpoint: 'leaders', query: type };
+            if (!['score', 'kills', 'timeplayed', 'funds'/*, 'clan'*/].includes(board)) return reject('not a valid board');
+            const data = { endpoint: 'leaders', query: board };
             this.playerQueue.addRequest(data, resolve, reject);
         });
     }
 
-    getPlayTime(data) {
-        let str = '';
-        const minutes = Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) % 60;
-        const hours = Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) % 24;
-        const days = Math.floor(Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) / 24);
-        if (days) str += `${days}d `;
-        if (hours) str += `${hours}h `;
-        if (minutes) str += `${minutes}m`;
-        return str;
+    structureLeaderboard(data) {
+        const structuredData = [];
+        for (const user in data) {
+            structuredData.push({
+                name: user.player_name,
+                featured: user.player_featured ? 'Yes' : 'No',
+                clan: user.player_clan ? user.player_clan : 'No Clan',
+                score: user.player_score, // May have to change this to attribute = score || krunkies || kills etc
+                hacker: user.player_hack ? user.player_hack : 'No'
+            })
+        }
     }
 
-    simplifyUser(data) {
+    structureUser(data) {
         return {
             name: data.player_name,
             id: data.player_id,
@@ -51,9 +58,20 @@ class Social {
             playTime: this.getPlayTime(data),
             krunkies: data.player_funds,
             clan: data.player_clan ? data.player_clan : 'No Clan',
-            featured: data.player_featured ? data.player_featured : 'No',
+            featured: data.player_featured ? 'Yes' : 'No',
             hacker: data.player_hack ? data.player_hack : 'No'
         };
+    }
+
+    getPlayTime(data) {
+        let str = '';
+        const minutes = Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) % 60;
+        const hours = Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) % 24;
+        const days = Math.floor(Math.floor(Math.floor(Math.floor(data.player_timeplayed / 1000) / 60) / 60) / 24);
+        if (days) str += `${days}d `;
+        if (hours) str += `${hours}h `;
+        if (minutes) str += `${minutes}m`;
+        return str;
     }
 }
 

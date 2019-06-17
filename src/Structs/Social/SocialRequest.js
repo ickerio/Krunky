@@ -61,7 +61,7 @@ class SocialRequest {
         const req = this.queue.find(r => r.endpoint === data[1][0] && `${prefix ? 'player_' : ''}${r.query}` === data[1][1]);
         if (!req) return;
 
-        req.resolve(data[1][2]);
+        req.resolve(data);
         clearTimeout(req.timeout);
         this.queue = this.queue.filter(r => r !== req);
     }
