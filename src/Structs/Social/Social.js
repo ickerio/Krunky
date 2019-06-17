@@ -49,7 +49,7 @@ class Social {
                     name: user.player_name,
                     featured: user.player_featured ? 'Yes' : 'No',
                     clan: user.player_clan ? user.player_clan : 'No Clan',
-                    attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || this.getTimePlayed(user.player_timeplayed) || user.player_wins,
+                    attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || user.player_timeplayed || user.player_wins,
                     hacker: user.player_hack ? user.player_hack : 'No'
                 });
             }
@@ -62,7 +62,8 @@ class Social {
             name: data.player_name,
             id: data.player_id,
             score: data.player_score,
-            level: this.getLevel(data.player_score),
+            level: this.calcLevel(data.player_score),
+            levelProgress: this.calcLevelProgress(data.player_score),
             kills: data.player_kills,
             deaths: data.player_deaths,
             kdr: (data.player_kills / data.player_deaths || 0).toFixed(2),
@@ -71,7 +72,7 @@ class Social {
             wins: data.player_wins,
             loses: data.player_games_played - data.player_wins,
             wl: (data.player_wins / (data.player_games_played - data.player_wins) || 0).toFixed(2), 
-            playTime: this.getTimePlayed(data.player_timeplayed),
+            playTime: data.player_timeplayed,
             krunkies: data.player_funds,
             clan: data.player_clan ? data.player_clan : 'No Clan',
             featured: data.player_featured ? 'Yes' : 'No',
@@ -84,16 +85,10 @@ class Social {
         return Math.max(1, Math.floor(0.03 * Math.sqrt(score)));
     }
 
-    getTimePlayed(time) {
-        if (time === undefined) return undefined;
-        let str = '';
-        const minutes = Math.floor(Math.floor(time / 1000) / 60) % 60;
-        const hours = Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) % 24;
-        const days = Math.floor(Math.floor(Math.floor(Math.floor(time / 1000) / 60) / 60) / 24);
-        if (days) str += `${days}d `;
-        if (hours) str += `${hours}h `;
-        if (minutes) str += `${minutes}m`;
-        return str;
+    getLevelProgress(score) {
+        const levelDecimal = 0.03 * Math.sqrt(score);
+        const level = Math.floor(levelDecimal);
+        return levelDecimal - level;
     }
 
     createAliasMap() {
