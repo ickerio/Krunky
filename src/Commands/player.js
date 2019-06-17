@@ -30,9 +30,9 @@ class PlayerCommand extends Command {
         if (!name || message.mentions.users.size) {
             try {
                 const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
-                name = result.KrunkerName;
+                name = result;
             } catch (error) {
-                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${this.client.config.PREFIX}settings`);
+                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`);
             }
         }
 

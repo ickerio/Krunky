@@ -14,7 +14,7 @@ class SettingsCommand extends Command {
     
             type: 'Utility',
             usage: 'settings <optional setting name>',
-            alliases: [],
+            alliases: ['setting'],
             ownerOnly: false,
             channelTypes: ['text']
         });
@@ -39,14 +39,14 @@ class SettingsCommand extends Command {
     async displayUserOptions(message) {
         const embed = new RichEmbed()
             .setAuthor('Krunky User Settings', this.client.constants.embedImages.embedHeader)
-            .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
+            .setDescription(`Use the command format \`${message.prefix}settings <option>\` to view more info about an option.`)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.settings
             .filter(set => set.type === 'User')
             .forEach(set => 
-                embed.addField(`${this.client.config.PREFIX}settings ${set.usage}`, set.description)
+                embed.addField(`${message.prefix}settings ${set.usage}`, set.description)
             );
         
         message.channel.send(embed);
@@ -56,14 +56,14 @@ class SettingsCommand extends Command {
     async displayGuildOptions(message) {
         const embed = new RichEmbed()
             .setAuthor('Krunky Admin Panel', this.client.constants.embedImages.embedHeader)
-            .setDescription(`Use the command format \`${this.client.config.PREFIX}settings <option>\` to view more info about an option.`)
+            .setDescription(`Use the command format \`${message.prefix}settings <option>\` to view more info about an option.`)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.settings
             .filter(set => set.type === 'Guild')
             .forEach(set => 
-                embed.addField(`${this.client.config.PREFIX}settings ${set.usage}`, set.description)
+                embed.addField(`${message.prefix}settings ${set.usage}`, set.description)
             );
         
         message.channel.send(embed);
@@ -73,7 +73,7 @@ class SettingsCommand extends Command {
     async displayOption(message, option) {
         const setting = this.client.database.settings.find(set => set.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
-        if (setting.type === 'Guild' && message.member.permissions.has('ADMINISTRATOR'))
+        if (setting.type === 'Guild' && !message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
         const embed = new RichEmbed()
@@ -86,7 +86,7 @@ class SettingsCommand extends Command {
         await embed.addField('Current', current[setting.dbRow]);
 
         embed
-            .addField('Update', `${this.client.config.PREFIX}settings ${setting.usage} <${setting.displayName.toLowerCase()}>`)
+            .addField('Update', `${message.prefix}settings ${setting.usage} <${setting.displayName.toLowerCase()}>`)
             .addField('Valid settings', setting.valid);
 
         message.channel.send(embed);
@@ -96,10 +96,10 @@ class SettingsCommand extends Command {
     async changeOption(message, option, value) {
         const setting = this.client.database.settings.find(set => set.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
-        if (setting.type === 'Guild' && message.member.permissions.has('ADMINISTRATOR'))
+        if (setting.type === 'Guild' && !message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
-        if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase}`);
+        if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase()}`);
 
         await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, value);
 
