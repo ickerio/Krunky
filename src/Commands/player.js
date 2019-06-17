@@ -1,15 +1,13 @@
 const Discord = require('discord.js');
 
-const Cache = require('../Structs/Cache/Cache.js');
 const Command = require('../Structs/Command.js');
 const Social = require('../Structs/Social/Social.js');
 const Renderer = require('../Structs/Renderer/Renderer.js');
+const Cache = require('../Structs/Cache/Cache.js');
 
 const social = new Social();
 const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
-
-// Load krunker images.
 
 class PlayerCommand extends Command {
     constructor(client) {
