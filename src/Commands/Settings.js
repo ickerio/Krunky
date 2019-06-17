@@ -21,6 +21,8 @@ class SettingsCommand extends Command {
     }
 
     async run(message, { option, value }) {
+        await this.client.database.addUser(message.author.id);
+
         if (!option) return this.displayAllOptions(message);
         if (option && !value) return this.displayOption(message, option);
         if (option && value) return this.changeOption(message, option, value);
@@ -96,6 +98,8 @@ class SettingsCommand extends Command {
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
         if (setting.type === 'Guild' && message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
+
+        if (!settings.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName}: \`${setting.valid}\``);
 
         await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, value);
 

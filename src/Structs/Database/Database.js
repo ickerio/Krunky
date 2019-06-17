@@ -15,7 +15,7 @@ class Database {
 
     addUser(id) {
         this.db.run(`
-        INSERT INTO User (UserID)
+        INSERT OR IGNORE INTO User (UserID)
         VALUES (${id});
         `);
     }
