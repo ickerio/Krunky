@@ -2,30 +2,31 @@ const RequestQueue = require('./SocialRequest.js');
 
 class Social {
     constructor() {
-        this.playerQueue = new RequestQueue();
+        this.queue = new RequestQueue();
+        this.boardsAlias = this.createAliasMap();
     }
 
     getUser(user) {
-        return this.getRawUser(user)
+        return this._getRawUser(user)
             .then(u => this.structureUser(u[1][2]));
     }
 
-    getLeaderboard(board) {
-        return this.getRawLeaderboard(user)
-            .then(b => this.structureLeaderboard(b[1][2]));
+    async getLeaderboard(alias) {
+        const board = this.boardsAlias.get(alias);
+        if (!board) throw new Error('Leaderboard type does not exist');
+
+        const raw = await this._getRawLeaderboard(board)
+        return this.structureLeaderboard(b[1][2])
     }
 
-    getRawUser(user) {
+    _getRawUser(user) {
         const data = { endpoint: 'profile', query: user };
-        return new Promise((resolve, reject) => this.playerQueue.addRequest(data, resolve, reject));
+        return new Promise((resolve, reject) => this.queue.addRequest(data, resolve, reject));
     }
 
-    getRawLeaderboard(board) {
-        return new Promise((resolve, reject) => {
-            if (!['score', 'kills', 'timeplayed', 'funds'/*, 'clan'*/].includes(board)) return reject('not a valid board');
-            const data = { endpoint: 'leaders', query: board };
-            this.playerQueue.addRequest(data, resolve, reject);
-        });
+    _getRawLeaderboard(board) {
+        const data = { endpoint: 'leaders', query: board };
+        return new Promise((resolve, reject) => this.queue.addRequest(data, resolve, reject));
     }
 
     structureLeaderboard(data) {
@@ -72,6 +73,24 @@ class Social {
         if (hours) str += `${hours}h `;
         if (minutes) str += `${minutes}m`;
         return str;
+    }
+
+    createAliasMap() {
+        const alias = {
+            score: ['lvl', 'lvls', 'levels', 'level'],
+            kills: ['kills', 'kill'],
+            timeplayed: ['timeplayed', 'time'],
+            funds: ['krunkies', 'money', 'funds'],
+            clan: ['clan', 'clans']
+        };
+        
+        const map = new Map();
+        
+        for (const [key, value] of Object.entries(lookup)) {
+            value.forEach(v => Map.set(v, key));
+        };
+
+        return map;
     }
 }
 
