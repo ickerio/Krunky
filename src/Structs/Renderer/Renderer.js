@@ -102,7 +102,7 @@ class Canvas {
         this.drawStatRow('Games Won:'    , data.wins,                3);
         this.drawStatRow('Games Played:' , data.totalGamesPlayed,    4);
         this.drawStatRow('W/L:'          , data.wl,                  5);
-        this.drawStatRow('Time Played:'  , data.playTime,            6);
+        this.drawStatRow('Time Played:', this.formatTimePlayed(data.playTime), 6);
     }
 
     drawFooter()
@@ -133,8 +133,6 @@ class Canvas {
         this.context.drawImage(this.krIcon, padLeft + imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
             titleBarHeight / 2 - imageSize / 2 - 4, 
             imageSize, imageSize);
-
-        
 
         // Calculate the xOffset before the font is changed.
         const xOffset = padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth;
@@ -201,14 +199,14 @@ class Canvas {
     {
         this.context.font = `${board.length < 8  ? lbTitleFontSizePx : lbTitleFontSize2Px}px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(board.charAt(0).toUpperCase() + board.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
+        this.context.fillText(board.name.charAt(0).toUpperCase() + board.name.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
     }
 
     async drawLeaderboardList(board, message)
     {
         switch(board.name)
         {
-        case 'funds':
+        case 'Krunkies':
             this.drawStatRow('', 'Krunkies', 0);
             break;
         }
@@ -227,7 +225,7 @@ class Canvas {
 
             switch(board.name)
             {
-            case 'funds':
+            case 'Krunkies':
                 this.drawStatRow(board.data[i].name, this.abbreviateKrunkCoins(board.data[i].attribute), i + 1, padLeft + statFontSizePx + padHorizontal);
                 break;
             }
