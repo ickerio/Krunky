@@ -47,9 +47,13 @@ class Canvas {
 
     async drawPlayerImage(data, message) {
         this.drawBackground();
+        console.log('finished 1');
         await this.drawAvatar(message);
+        console.log('finished 2');
         this.drawPlayerStats(data);
+        console.log('finished 3');
         this.drawFooter();
+        console.log('finished 4');
 
         return this.canvas.toBuffer();
     }
@@ -103,8 +107,6 @@ class Canvas {
         this.drawStatRow('Games Played:' , data.totalGamesPlayed,    4);
         this.drawStatRow('W/L:'          , data.wl,                  5);
         this.drawStatRow('Time Played:'  , data.playTime,            6);
-
-        
     }
 
     drawFooter()
@@ -178,8 +180,8 @@ class Canvas {
             titleBarHeight * 0.6 + progressBarInner, 
             (this.canvas.width - xOffset -  2 * padHorizontal - separatorWidth - padRight - 2 * progressBarInner) * this.getLevelProgress(data.score), 
             titleBarHeight / 4 - 2 * progressBarInner);
-
-        this.context.drawImage(this.levelIcons[( Math.floor( 0.03 * Math.sqrt(data.score) ) - 1) / 3 - 1], 
+        
+        this.context.drawImage(this.levelIcons[Math.ceil(( Math.floor( 0.03 * Math.sqrt(data.score) ) - 1) / 3 - 1)], 
             xOffset + padHorizontal + separatorWidth, titleBarHeight / 4 - imageSize / 2, levelImageSize, levelImageSize);
         
         this.context.font = `${Math.floor(titleFontSizePx * 0.8)}px FFF Forward`;
