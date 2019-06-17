@@ -54,11 +54,11 @@ class Canvas {
         return this.canvas.toBuffer();
     }
 
-    async drawLeaderboardImage(board, data, message)
+    async drawLeaderboardImage(board, message)
     {
         this.drawBackground();
         this.drawLeaderboardTitle(board);
-        await this.drawLeaderboardList(board, data, message);
+        await this.drawLeaderboardList(board, message);
         this.drawFooter();
 
         return this.canvas.toBuffer();
