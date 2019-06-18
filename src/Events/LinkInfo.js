@@ -10,13 +10,13 @@ async function info(message) {
     const match = await this.matchmaker.getMatch(reg[2]);
 
     const desc = [
-        `Players: ${match.clients}/${match.maxClients}`,
+        `Players: ${match.clients}/${match.maxClients}${match.clients === match.maxClients ? ' (**Full**)' : ''}`,
         `Map: ${match.data.i}`,
-        `Custom: ${match.data.i ? 'Yes' : 'No'}`
+        `Custom: ${match.data.cs ? 'Yes' : 'No'}`
     ].join('\n');
 
     const embed = new RichEmbed()
-        .setAuthor(`Match ${match.id}`, this.constants.embedImages.embedHeader, `https://${reg[1]}`)
+        .setAuthor(`Match ${match.id}`, this.constants.embedImages.embedHeader, `https://krunker.io/?game=${match.id}`)
         .setDescription(desc)
         .setColor(this.constants.embedColour);
 
