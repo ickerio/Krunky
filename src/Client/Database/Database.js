@@ -4,26 +4,25 @@ const settings = require('./settings.js');
 
 class Database {
     constructor() {
-        this.init();
         this.settings = settings;
     }
 
-    init(){
-        sqlite.open('./dat/krunky.sqlite')
+    connect(){
+        return sqlite.open('./dat/krunky.sqlite', { cached: true })
             .then(db => this.db = db);
     }
 
     addUser(id) {
-        this.db.run(`
+        return this.db.run(`
         INSERT OR IGNORE INTO User (UserID)
-        VALUES (${id});
-        `);
+        VALUES (?);
+        `, id);
     }
 
-    getUser(id) {
+    addGuild(id) {
         return this.db.run(`
-        SELECT * FROM User
-        WHERE User.UserID = '${id}';
+        INSERT OR IGNORE INTO Guild (GuildID)
+        VALUES (${id});
         `);
     }
 
