@@ -1,12 +1,12 @@
 module.exports = [
     {
-        usage: 'username',
+        usage: 'krunkername',
         displayName: 'Krunker name',
         type: 'User',
         dbRow: 'KrunkerName',
         description: 'Link your krunker account username to skip typing it in on the `player` command',
-        valid: 'Your krunker username of length less than 15 characters',
-        validate: (parameter) => parameter.length < 15
+        valid: 'Krunker username of length less than 15 characters',
+        validate: (parameter) => parameter.length < 15,
     },
     {
         usage: 'prefix',
@@ -16,5 +16,15 @@ module.exports = [
         description: 'Change Krunky\'s prefix within this server',
         valid: 'A string of less than 5 characters with no spaces in',
         validate: (parameter) => parameter.length < 5 && !parameter.includes(' ')
+    },
+    {
+        usage: 'gameinfo',
+        displayName: 'Game info',
+        type: 'Guild',
+        dbRow: 'GameInfo',
+        description: 'Whenever a krunker link is mentioned, Krunky will fetch its info',
+        valid: 'Yes / No',
+        validate: (parameter) => parameter === 'Yes' || parameter === 'No',
+        convert: (parameter) => parameter === 'Yes' ? true : false
     }
 ];

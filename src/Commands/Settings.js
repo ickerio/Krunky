@@ -100,6 +100,7 @@ class SettingsCommand extends Command {
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
         if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase()}`);
+        if (setting.convert) value = setting.convert(value);
 
         await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, value);
 
