@@ -1,8 +1,8 @@
 class CacheItem {
-    constructor(key, value, map, maxTime) {
+    constructor(key, value, cache) {
         this.key = key;
         this.value = value;
-        this.timeout = setTimeout(() => map.delete(key), maxTime);
+        this.timeout = setTimeout(() => cache.map.delete(key), cache.maxTime);
     }
 }
 
