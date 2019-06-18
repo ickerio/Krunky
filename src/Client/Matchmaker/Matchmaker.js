@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const fetchInterval = 60 * 1000;
+//const fetchInterval = 60 * 1000;
 
 class Matchmaker {
     constructor() {
@@ -10,7 +10,9 @@ class Matchmaker {
 
     async getMatch(id) {
         const data = await fetch(`https://matchmaker.krunker.io/game-info?game=${id}`);
-        return await data.json();
+        const json = await data.json();
+        if (json.error) throw new Error('Invalid game link');
+        return json;
     }
 
     async fetchMatches() {
