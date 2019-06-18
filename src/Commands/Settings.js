@@ -76,16 +76,14 @@ class SettingsCommand extends Command {
         if (setting.type === 'Guild' && !message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
+        const current = await this.client.database.getSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage);
+
         const embed = new RichEmbed()
             .setAuthor(`Krunky ${setting.type === 'Guild' ? 'Admin Panel' : 'User Settings'} - ${setting.displayName}`, this.client.constants.embedImages.embedHeader)
             .setDescription(setting.description)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
-            .setColor(this.client.constants.embedColour);
-
-        const current = await this.client.database.getSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage);
-        await embed.addField('Current', current || 'Unset');
-
-        embed
+            .setColor(this.client.constants.embedColour)
+            .addField('Current', (current === null || current === undefined) ? 'Unset' : setting.displayConvert(current))
             .addField('Update', `${message.prefix}settings ${setting.usage} <${setting.displayName.toLowerCase()}>`)
             .addField('Valid settings', setting.valid);
 
@@ -100,9 +98,8 @@ class SettingsCommand extends Command {
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
         if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase()}`);
-        if (setting.convert) value = setting.convert(value);
 
-        await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, value);
+        await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, setting.databaseConvert(value));
 
         message.channel.send(`Updated your ${setting.type.toLowerCase()} setting \`${setting.displayName}\` to \`${value}\``);
     }
