@@ -16,7 +16,7 @@ class LeaderboardCommand extends Command {
             usage: 'leaderboard <board name>',
             alliases: [ 'lb' ],
             ownerOnly: false,
-            channelTypes: ['text']
+            channelTypes: [ 'text' ]
         });
     }
 
