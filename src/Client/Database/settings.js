@@ -12,7 +12,7 @@ module.exports = [
     },
     {
         usage: 'prefix',
-        displayName: 'Server-wide Krunky Prefix',
+        displayName: 'Server Prefix',
         type: 'Guild',
         dbRow: 'Prefix',
         description: 'Change Krunky\'s prefix within this server',
