@@ -85,7 +85,7 @@ class KrunkyClient extends Discord.Client {
 
     addEvent(f) {
         const event = require(`../Events/${f}`);
-        this.on(event[0], event[1].bind(null));
+        event.forEach(ev => this.on(ev.name, ev.func.bind(this)));
         delete require.cache[require.resolve(`../Events/${f}`)];
     }
 
