@@ -7,5 +7,23 @@ module.exports = (client) => { return {
         helpFooter: 'https://cdn.discordapp.com/attachments/589249378288533515/589698788285874176/krunky-dev.png',
         settingsThumbnail: 'https://cdn.discordapp.com/attachments/589249378288533515/589795859047120913/krunky-settings.png',
         embedHeader: 'https://cdn.discordapp.com/attachments/588010292777320452/589826628234772519/krunky-heading.png'
+    },
+    regionNames: {
+        local: 'Local',
+        'us-nj': 'New Jersey',
+        'us-il': 'Chicago',
+        'us-tx': 'Dallas',
+        'us-wa': 'Seattle',
+        'us-ca-la': 'Los Angeles',
+        'us-ga': 'Atlanta',
+        'nl-ams': 'Amsterdam',
+        'gb-lon': 'London',
+        'de-fra': 'Frankfurt',
+        'us-ca-sv': 'Silicon Valley',
+        'au-syd': 'Sydney',
+        'fr-par': 'Paris',
+        'jb-hnd': 'Tokyo',
+        'us-fl': 'Miami',
+        sgp: 'Singapore'
     }
 };};

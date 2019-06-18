@@ -10,6 +10,7 @@ async function info(message) {
     const match = await this.matchmaker.getMatch(reg[2]);
 
     const desc = [
+        `Region: ${this.constants.regionNames[match.region]}`,
         `Players: ${match.clients}/${match.maxClients}${match.clients === match.maxClients ? ' (**Full**)' : ''}`,
         `Map: ${match.data.i}`,
         `Custom: ${match.data.cs ? 'Yes' : 'No'}`
