@@ -31,8 +31,8 @@ class KrunkyClient extends Discord.Client {
 
     
     async processMessage(message) {
-        // Find prefix of guild or default to '!'
-        message.prefix = message.channel.type === 'text' ? await this.database.getSetting(message.guild.id, 'prefix'): '!';
+        // Find prefix of guild or default to DEFAULT_PREFIX
+        message.prefix = message.channel.type === 'text' ? await this.database.getSetting(message.guild.id, 'prefix') : this.config.DEFAULT_PREFIX;
 
         // Display prefix if tagged
         if (message.content.startsWith(this.user.toString())) return message.channel.send(`\`${message.prefix}\` is my prefix`);

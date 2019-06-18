@@ -1,6 +1,6 @@
 {
     "TOKEN": "Discord Token",
     "OWNER": ["owner 1', "owner 2"],
-    "PREFIX": "?",
+    "DEFAULT_PREFIX": "?",
     "GAME": ["name", {type: ""}]
 }
