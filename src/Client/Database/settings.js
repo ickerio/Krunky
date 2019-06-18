@@ -18,10 +18,10 @@ module.exports = [
         validate: (parameter) => parameter.length < 5 && !parameter.includes(' ')
     },
     {
-        usage: 'gameinfo',
-        displayName: 'Game info',
+        usage: 'linkinfo',
+        displayName: 'Link info',
         type: 'Guild',
-        dbRow: 'GameInfo',
+        dbRow: 'LinkInfo',
         description: 'Whenever a krunker link is mentioned, Krunky will fetch its info',
         valid: 'Yes / No',
         validate: (parameter) => parameter === 'Yes' || parameter === 'No',

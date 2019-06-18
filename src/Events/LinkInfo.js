@@ -3,7 +3,7 @@ const { RichEmbed } = require('discord.js');
 
 const matchmaker = new Matchmaker();
 
-async function detailer(message) {
+async function info(message) {
     const reg = message.content.match(/(krunker\.io\/\?game=)([a-zA-Z]{2,3}:[a-zA-Z0-9]{5})+/);
     if (!reg) return;
 
@@ -22,7 +22,7 @@ async function detailer(message) {
         .setDescription(desc)
         .setColor(message.client.constants.embedColour);
 
-    message.channel.send(emebd);
+    message.channel.send(embed);
 }
 
-module.exports = [ 'message', detailer ];
+module.exports = [ 'message', info ];
