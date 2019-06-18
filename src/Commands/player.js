@@ -10,7 +10,7 @@ class PlayerCommand extends Command {
             name: 'Player',
             useName: 'player',
             description: 'Shows player stats, levelling and funds',
-            args: { name: {required: false }},
+            args: { name: { required: false }},
     
             type: 'Krunker',
             usage: 'player <player name>',
@@ -24,7 +24,7 @@ class PlayerCommand extends Command {
         // Check for tagged user's name or authors name
         if (!name || message.mentions.users.size) {
             try {
-                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
+                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'krunkername');
                 name = result;
             } catch (error) {
                 return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`);
