@@ -83,7 +83,7 @@ class SettingsCommand extends Command {
             .setColor(this.client.constants.embedColour);
 
         const current = await this.client.database.getSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage);
-        await embed.addField('Current', current[setting.dbRow]);
+        await embed.addField('Current', current || 'Unset');
 
         embed
             .addField('Update', `${message.prefix}settings ${setting.usage} <${setting.displayName.toLowerCase()}>`)
