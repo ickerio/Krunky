@@ -26,7 +26,7 @@ class SettingsCommand extends Command {
         if (!option) return this.displayAllOptions(message);
         if (option && !value) return this.displayOption(message, option);
         if (option && value) return this.changeOption(message, option, value);
-        message.channel.send('An error occoured changing settings');
+        message.channel.send('An error occurred changing settings');
     }
 
     // List all settings

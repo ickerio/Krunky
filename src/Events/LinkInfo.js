@@ -24,7 +24,7 @@ async function info(message) {
     
         message.channel.send(embed);
     } catch (error) {
-        message.channel.send('An error occoured getting that game\'s info');
+        message.channel.send('An error occurred getting that game\'s info');
     }
 }
 

@@ -31,8 +31,7 @@ class LeaderboardCommand extends Command {
             cache.set(args.board, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occoured getting board ${args.board}`);
-            console.log(error);
+            message.channel.send(`An error occurred getting board ${args.board}`);
         }
     }
 }
