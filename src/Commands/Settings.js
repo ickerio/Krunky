@@ -99,7 +99,7 @@ class SettingsCommand extends Command {
 
         if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase()}`);
 
-        setting.type === 'User' ? await this.client.database.userUpdate(message.author.id, setting.dbRow, value) : await this.client.database.guildUpdate(message.guild.id, setting.dbRow, value);
+        setting.type === 'User' ? await this.client.database.userUpdate(message.author.id, setting.dbRow, setting.databaseConvert(value)) : await this.client.database.guildUpdate(message.guild.id, setting.dbRow, setting.databaseConvert(value));
 
         message.channel.send(`Updated your ${setting.type.toLowerCase()} setting \`${setting.displayName}\` to \`${value}\``);
     }
