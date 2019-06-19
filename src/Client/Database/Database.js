@@ -47,7 +47,7 @@ class Database {
         WHERE User.UserID = ?;
         `, id);
 
-        if (!user) return; // Check cos might not be null / undefined
+        if (!user) return;
         await this.userCache.set(id, new Map(Object.entries(user)));
     }
 
@@ -85,7 +85,7 @@ class Database {
         WHERE Guild.GuildID = ?;
         `, id);
 
-        if (!guild) return; // Check cos might not be null / undefined
+        if (!guild) return;
         await this.guildCache.set(id, new Map(Object.entries(guild)));
     }
 
