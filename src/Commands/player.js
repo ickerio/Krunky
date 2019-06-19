@@ -37,7 +37,7 @@ class PlayerCommand extends Command {
         // Hit API and render image
         try {
             const data = await this.client.social.getUser(name);
-            const buffer = await this.client.renderer.drawPlayerImage(data, message);
+            const buffer = this.client.renderer.drawPlayerImage(data);
             const attachment = await new Attachment(buffer, `Krunky-player_${name}.png`);
 
             cache.set(name, attachment);
