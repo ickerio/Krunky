@@ -43,7 +43,7 @@ class PlayerCommand extends Command {
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occoured getting player ${name}`);
+            message.channel.send(`An error occurred getting player ${name}`);
         }
     }
 }
