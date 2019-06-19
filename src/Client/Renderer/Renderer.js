@@ -1,4 +1,3 @@
-const fetch = require('node-fetch');
 const fs = require('fs');
 const { createCanvas, Image } = require('canvas');
 
@@ -20,7 +19,6 @@ const levelImageSize = 46;
 const levelImageSize2 = 20;
 const featuredImageSize = 20;
 const imagePadRight = 10;
-const imageBorderThickness = 3;
 const separatorWidth = 4;
 
 class Canvas {
@@ -265,7 +263,7 @@ class Canvas {
             (this.canvas.width - xOffset -  2 * padHorizontal - separatorWidth - padRight - 2 * progressBarInner) * data.levelProgress, 
             titleBarHeight / 4 - 2 * progressBarInner);
         
-        this.context.drawImage(this.levelIcons[Math.ceil(( data.level - 1) / 3 - 1)], 
+        this.context.drawImage(this.levelIcons[Math.min(Math.ceil(( parseInt(data.level) - 1) / 3 - 1), this.levelIcons.length - 1)], 
             xOffset + padHorizontal + separatorWidth, titleBarHeight / 4 - imageSize / 2, levelImageSize, levelImageSize);
         
         this.context.font = `${Math.floor(titleFontSizePx * 0.8)}px FFF Forward`;
