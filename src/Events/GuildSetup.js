@@ -1,10 +1,10 @@
 function newGuild(guild) {
-    this.database.addGuild(guild.id);
+    this.database.guildAdd(guild.id);
 }
 
 async function checkGuilds() {
     await this.database.connect();
-    this.guilds.forEach(guild => this.database.addGuild(guild.id));
+    this.guilds.forEach(guild => this.database.guildAdd(guild.id));
 }
 
 module.exports = [

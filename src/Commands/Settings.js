@@ -21,7 +21,7 @@ class SettingsCommand extends Command {
     }
 
     async run(message, { option, value }) {
-        await this.client.database.addUser(message.author.id);
+        await this.client.database.userAdd(message.author.id);
 
         if (!option) return this.displayAllOptions(message);
         if (option && !value) return this.displayOption(message, option);
@@ -43,10 +43,10 @@ class SettingsCommand extends Command {
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
-        this.client.database.settings
-            .filter(set => set.type === 'User')
-            .forEach(set => 
-                embed.addField(`${message.prefix}settings ${set.usage}`, set.description)
+        this.client.database.definitions
+            .filter(def => def.type === 'User')
+            .forEach(def => 
+                embed.addField(`${message.prefix}settings ${def.usage}`, def.description)
             );
         
         message.channel.send(embed);
@@ -60,10 +60,10 @@ class SettingsCommand extends Command {
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
-        this.client.database.settings
-            .filter(set => set.type === 'Guild')
-            .forEach(set => 
-                embed.addField(`${message.prefix}settings ${set.usage}`, set.description)
+        this.client.database.definitions
+            .filter(def => def.type === 'Guild')
+            .forEach(def => 
+                embed.addField(`${message.prefix}settings ${def.usage}`, def.description)
             );
         
         message.channel.send(embed);
@@ -71,12 +71,12 @@ class SettingsCommand extends Command {
 
     // Specify one setting
     async displayOption(message, option) {
-        const setting = this.client.database.settings.find(set => set.usage === option);
+        const setting = this.client.database.definitions.find(def => def.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
         if (setting.type === 'Guild' && !message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
-        const current = await this.client.database.getSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage);
+        const current = setting.type === 'User' ? await this.client.database.userGet(message.author.id, setting.dbRow) : await this.client.database.guildGet(message.guild.id, setting.dbRow);
 
         const embed = new RichEmbed()
             .setAuthor(`Krunky ${setting.type === 'Guild' ? 'Admin Panel' : 'User Settings'} - ${setting.displayName}`, this.client.constants.embedImages.embedHeader)
@@ -92,14 +92,14 @@ class SettingsCommand extends Command {
 
     // Change a setting
     async changeOption(message, option, value) {
-        const setting = this.client.database.settings.find(set => set.usage === option);
+        const setting = this.client.database.definitions.find(def => def.usage === option);
         if (!setting) return message.channel.send(`No such setting \`${option}\``);
         if (setting.type === 'Guild' && !message.member.permissions.has('ADMINISTRATOR'))
             return message.channel.send(`\`Administrator\` permission is required to check setting \`${setting.displayName}\``);
 
         if (!setting.validate(value)) return message.channel.send(`\`${value}\` must be valid ${setting.displayName.toLowerCase()}`);
 
-        await this.client.database.setSetting(setting.type === 'Guild' ? message.guild.id : message.author.id, setting.usage, setting.databaseConvert(value));
+        setting.type === 'User' ? await this.client.database.userUpdate(message.author.id, setting.dbRow, value) : await this.client.database.guildUpdate(message.guild.id, setting.dbRow, value);
 
         message.channel.send(`Updated your ${setting.type.toLowerCase()} setting \`${setting.displayName}\` to \`${value}\``);
     }
