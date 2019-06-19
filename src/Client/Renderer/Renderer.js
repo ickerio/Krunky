@@ -53,16 +53,15 @@ class Canvas {
         }
     }
 
-    async drawPlayerImage(data, message) {
+    drawPlayerImage(data) {
         this.drawBackground();
-        await this.drawAvatar(message);
         this.drawPlayerStats(data);
         this.drawFooter();
 
         return this.canvas.toBuffer();
     }
 
-    async drawLeaderboardImage(board, message)
+    async drawLeaderboardImage(board)
     {
         this.drawBackground();
         this.drawLeaderboardTitle(board);
@@ -81,29 +80,33 @@ class Canvas {
         this.context.fillRect(0, 0, this.canvas.width, titleBarHeight);
     }
 
-    async drawAvatar(message) {
-        this.context.fillStyle = '#a0a0a0';
-        this.context.fillRect(padLeft - imageBorderThickness, titleBarHeight / 2 - imageSize / 2 - imageBorderThickness, imageSize + imageBorderThickness * 2, imageSize + imageBorderThickness * 2);
-
-        const data = await fetch(message.author.avatarURL.replace(/(size=)[^&]+/, '$1' + imageSize));
-        const img = new Image();
-        img.src = await data.buffer();
-        await this.context.drawImage(img, padLeft, titleBarHeight / 2 - imageSize / 2);
-    }
-
     drawPlayerStats(data) {
-        // Draw player name.
+
         this.context.font = `${ data.name.length < 10  ? titleFontSizePx : titleFontSize2Px }px FFF Forward`;
+        let playerNameY = 0;
+        if (data.clan) {
+            playerNameY = (data.name.length < 10 && data.clan.length < 10 ? titleFontSizePx : titleFontSize2Px) + 16;
+            // Draw clan name.
+            this.context.fillStyle = '#a0a0a0';
+            this.context.fillText(`[${data.clan}]`, padLeft + imagePadRight, titleBarHeight - 5);
+        }
+        else
+        {
+            playerNameY = titleBarHeight / 2 + (data.name.length < 10 && `[${data.clan}]`.length < 10 ? titleFontSizePx : titleFontSize2Px) / 2;
+        }
+
+        // Draw player name.
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(data.name, padLeft + imageSize + imagePadRight, titleBarHeight / 2 + (data.name.length < 10  ? titleFontSizePx : titleFontSize2Px) / 2);
+        this.context.fillText(data.name, padLeft + imagePadRight, playerNameY);
 
         // Draw seperator
         this.context.fillStyle = '#a0a0a0';
-        this.context.fillRect(padLeft + imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
+        this.context.fillRect(padLeft + imagePadRight + this.context.measureText(data.name.length > `[${data.clan}]`.length ? data.name : `[${data.clan}]`).width + padHorizontal, titleBarHeight * 0.2, separatorWidth, titleBarHeight * 0.6);
 
         const xOffset = this.drawKrunkCoins(data);
         this.drawLevelProgress(data, xOffset);
 
+        // Draw the stats.
         this.drawStatRow('Kills:'        , data.kills,               0, statFontSizePx, 0, 10);
         this.drawStatRow('Deaths:'       , data.deaths,              1, statFontSizePx, 0, 10);
         this.drawStatRow('K/D:'          , data.kdr,                 2, statFontSizePx, 0, 10);
@@ -133,7 +136,7 @@ class Canvas {
         this.context.fillStyle = '#606060';
         this.context.fillText(title, padLeft + xOffset, yOffset + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical));
         this.context.fillStyle = '#000000';
-        this.context.fillText(stat, this.canvas.width - padRight - this.context.measureText(stat).width, yOffset + 10 + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical));
+        this.context.fillText(stat, this.canvas.width - padRight - this.context.measureText(stat).width, yOffset + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical));
     }
 
     drawLeaderboardRow(name, clan, featured, stat, rowIndex, fontSize = statFontSizePx,xOffset = 0, yOffset = 0) {
@@ -218,12 +221,12 @@ class Canvas {
 
     drawKrunkCoins(data) {
         // Draw krunk coin icon.
-        this.context.drawImage(this.krIcon, padLeft + imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 2 + separatorWidth, 
+        this.context.drawImage(this.krIcon, padLeft + imagePadRight + this.context.measureText(data.name.length > `[${data.clan}]`.length ? data.name : `[${data.clan}]`).width + padHorizontal * 2 + separatorWidth, 
             titleBarHeight / 2 - imageSize / 2 - 4, 
             imageSize, imageSize);
 
         // Calculate the xOffset before the font is changed.
-        const xOffset = padLeft + 2 * imageSize + imagePadRight + this.context.measureText(data.name).width + padHorizontal * 3 + separatorWidth;
+        const xOffset = padLeft + imageSize + imagePadRight + this.context.measureText(data.name.length > `[${data.clan}]`.length ? data.name : `[${data.clan}]`).width + padHorizontal * 3 + separatorWidth;
         this.context.font = `${ titleFontSizePx }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
         this.context.fillText(this.formatKrunkCoins(data.krunkies), xOffset, titleBarHeight / 2 + titleFontSizePx / 2);

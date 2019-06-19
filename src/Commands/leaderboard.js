@@ -25,7 +25,7 @@ class LeaderboardCommand extends Command {
 
         try {
             const board = await this.client.social.getLeaderboard(args.board);
-            const buffer = await this.client.renderer.drawLeaderboardImage(board, message);
+            const buffer = await this.client.renderer.drawLeaderboardImage(board);
             const attachment = await new Attachment(buffer, `Krunky-leaderboard_${board.name}.png`);
 
             cache.set(args.board, attachment);
