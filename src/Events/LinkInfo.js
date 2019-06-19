@@ -4,7 +4,7 @@ async function info(message) {
     const reg = message.content.match(/(krunker\.io\/\?game=)([a-zA-Z]{2,3}:[a-zA-Z0-9]{5})+/);
     if (!reg) return;
 
-    const setting = message.channel.type == 'text' ?  await this.database.getSetting(message.guild.id, 'linkinfo') : true;
+    const setting = message.channel.type == 'text' ?  await this.database.guildGet(message.guild.id, 'LinkInfo') : true;
     if (!setting) return;
 
     try {
