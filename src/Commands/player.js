@@ -1,12 +1,7 @@
-const Discord = require('discord.js');
+const Command = require('../Client/Command.js');
+const { Attachment } = require('discord.js');
+const Cache = require('../Util/Cache/Cache.js');
 
-const Command = require('../Structs/Command.js');
-const Social = require('../Structs/Social/Social.js');
-const Renderer = require('../Structs/Renderer/Renderer.js');
-const Cache = require('../Structs/Cache/Cache.js');
-
-const social = new Social();
-const renderer = new Renderer();
 const cache = new Cache(60 * 1000);
 
 class PlayerCommand extends Command {
@@ -15,13 +10,13 @@ class PlayerCommand extends Command {
             name: 'Player',
             useName: 'player',
             description: 'Shows player stats, levelling and funds',
-            args: { name: {required: false }},
+            args: { name: { required: false }},
     
             type: 'Krunker',
             usage: 'player <player name>',
-            alliases: [ 'p'] ,
+            alliases: [ 'p' ] ,
             ownerOnly: false,
-            channelTypes: ['text']
+            channelTypes: [ 'text' ]
         });
     }
 
@@ -29,7 +24,7 @@ class PlayerCommand extends Command {
         // Check for tagged user's name or authors name
         if (!name || message.mentions.users.size) {
             try {
-                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'username');
+                const result = await this.client.database.getSetting(name ? message.mentions.users.first().id : message.author.id, 'krunkername');
                 name = result;
             } catch (error) {
                 return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`);
@@ -41,9 +36,9 @@ class PlayerCommand extends Command {
 
         // Hit API and render image
         try {
-            const data = await social.getUser(name);
-            const buffer = await renderer.drawPlayerImage(data, message);
-            const attachment = await new Discord.Attachment(buffer, name + '-Krunky.png');
+            const data = await this.client.social.getUser(name);
+            const buffer = await this.client.renderer.drawPlayerImage(data, message);
+            const attachment = await new Attachment(buffer, `Krunky-player_${name}.png`);
 
             cache.set(name, attachment);
             message.channel.send(attachment);

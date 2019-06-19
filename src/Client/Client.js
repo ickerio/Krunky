@@ -1,15 +1,17 @@
 const Discord = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
 const { log } = require('../Util/Util.js');
+
 const Constants = require('../Util/Constants.js');
-const Database = require('../Structs/Database/Database.js');
+const Database = require('./Database/Database.js');
+const Matchmaker = require('./Matchmaker/Matchmaker.js');
+const Renderer = require('./Renderer/Renderer.js');
+const Social = require('./Social/Social.js');
 
 class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
         super(options);
-
         this.config = options.config;
-        this.database = new Database();
 
         this.on('ready', this.nowReady);
         this.on('message', async message => await this.processMessage(message));
@@ -18,14 +20,22 @@ class KrunkyClient extends Discord.Client {
 
     nowReady() {
         log(`Logged in as ${this.user.tag}!`, this.shard);
-        this.constants = Constants(this);
         this.user.setActivity(...this.config.GAME);
+
+        this.constants = Constants(this);
+        this.database = new Database();
+        this.matchmaker = new Matchmaker();
+        this.renderer = new Renderer();
+        this.social = new Social();
     }
 
     
     async processMessage(message) {
-        message.prefix = await this.database.getSetting(message.guild.id, 'prefix');
-        if(message.content.startsWith(this.user.toString())) return message.channel.send(`\`${message.prefix}\` is my prefix`);
+        // Find prefix of guild or default to DEFAULT_PREFIX
+        message.prefix = message.channel.type === 'text' ? await this.database.getSetting(message.guild.id, 'prefix') : this.config.DEFAULT_PREFIX;
+
+        // Display prefix if tagged
+        if (message.content.startsWith(this.user.toString())) return message.channel.send(`\`${message.prefix}\` is my prefix`);
     
         // Ignore messages if statements
         if (!message.content.startsWith(message.prefix)) return;
@@ -74,9 +84,8 @@ class KrunkyClient extends Discord.Client {
     }
 
     addEvent(f) {
-        const eventName = f.split('.')[0];
         const event = require(`../Events/${f}`);
-        this.on(eventName, event.bind(null));
+        event.forEach(ev => this.on(ev.name, ev.func.bind(this)));
         delete require.cache[require.resolve(`../Events/${f}`)];
     }
 
@@ -94,6 +103,7 @@ class KrunkyClient extends Discord.Client {
             files.forEach(file => this.addEvent(file));
         });
     }
+    
     login(token) {
         super.login(token);
     }

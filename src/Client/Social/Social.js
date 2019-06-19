@@ -47,7 +47,7 @@ class Social {
             data[1][2].forEach(user => {
                 structuredData.push({
                     name: user.player_name,
-                    featured: user.player_featured ? 'Yes' : 'No',
+                    featured: user.player_featured,
                     clan: user.player_clan ? user.player_clan : 'No Clan',
                     attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || user.player_timeplayed || user.player_wins,
                     hacker: user.player_hack ? user.player_hack : 'No'
@@ -75,7 +75,7 @@ class Social {
             playTime: data.player_timeplayed,
             krunkies: data.player_funds,
             clan: data.player_clan ? data.player_clan : 'No Clan',
-            featured: data.player_featured ? 'Yes' : 'No',
+            featured: data.player_featured,
             hacker: data.player_hack ? data.player_hack : 'No'
         };
     }
