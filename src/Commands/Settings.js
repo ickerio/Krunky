@@ -31,8 +31,8 @@ class SettingsCommand extends Command {
 
     // List all settings
     async displayAllOptions(message) {
-        if (message.member.permissions.has('ADMINISTRATOR')) this.displayGuildOptions(message);
         this.displayUserOptions(message);
+        if (message.member.permissions.has('ADMINISTRATOR')) this.displayGuildOptions(message);
     }
 
     // User settings
@@ -56,8 +56,6 @@ class SettingsCommand extends Command {
     async displayGuildOptions(message) {
         const embed = new RichEmbed()
             .setAuthor('Krunky Admin Panel', this.client.constants.embedImages.embedHeader)
-            .setDescription(`Use the command format \`${message.prefix}settings <option>\` to view more info about an option.`)
-            .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.definitions
