@@ -34,7 +34,7 @@ class Matchmaker {
             maps: new Map()
         };
 
-        for (const [key] of Object.entries(client.constants.regionNames)) {
+        for (const [key] of Object.entries(this.client.constants.regionNames)) {
             stats.regions[key] = { players: 0, matches: 0 };
         }
 
