@@ -4,8 +4,8 @@ const fetchInterval = 60 * 1000;
 
 class Matchmaker {
     constructor(client) {
-        this.client;
-        onInterval();
+        this.client = client;
+        this.onInterval();
         this.matchInterval = setInterval(this.onInterval.bind(this), fetchInterval);
     }
 
@@ -39,17 +39,16 @@ class Matchmaker {
         }
 
         matches.forEach(match => {
-                // Total players
-                stats.players += match.clients;
-                // Players and matches for each region
-                stats.regions[match.region].players += match.clients;
-                stats.regions[match.region].matches ++;
-                // Players and matches for each map
-                const current = stats.maps.has(match.data.i) ? stats.maps.get(match.data.i) : { players: 0, matches: 0 };
-                current.players += match.clients;
-                current.matches ++;
-                stats.maps.set(match.data.i, current);
-            });
+            stats.players += match.clients;
+
+            stats.regions[match.region].players += match.clients;
+            stats.regions[match.region].matches ++;
+
+            const current = stats.maps.has(match.data.i) ? stats.maps.get(match.data.i) : { players: 0, matches: 0 };
+            current.players += match.clients;
+            current.matches ++;
+            stats.maps.set(match.data.i, current);
+        });
 
         return stats;
     }
