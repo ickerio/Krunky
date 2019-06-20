@@ -4,7 +4,7 @@ module.exports = [
         displayName: 'Krunker Name',
         type: 'User',
         dbRow: 'KrunkerName',
-        description: 'Link your krunker account username to skip typing it in on the `player` command',
+        description: 'Link your krunker account username to skip typing it in on the `stats` command',
         valid: 'Krunker username of length less than 15 characters',
         validate: parameter => parameter.length < 15,
         databaseConvert: parameter => parameter,

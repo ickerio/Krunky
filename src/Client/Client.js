@@ -24,7 +24,7 @@ class KrunkyClient extends Discord.Client {
 
         this.constants = Constants(this);
         this.database = new Database();
-        this.matchmaker = new Matchmaker();
+        this.matchmaker = new Matchmaker(this);
         this.renderer = new Renderer();
         this.social = new Social();
     }

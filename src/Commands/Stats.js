@@ -4,17 +4,17 @@ const Cache = require('../Util/Cache/Cache.js');
 
 const cache = new Cache(60 * 1000);
 
-class PlayerCommand extends Command {
+class StatsCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'Player',
-            useName: 'player',
+            name: 'Stats',
+            useName: 'stats',
             description: 'Shows player stats, levelling and funds',
             args: { name: { required: false }},
     
             type: 'Krunker',
-            usage: 'player <player name>',
-            alliases: [ 'p' ] ,
+            usage: 'stats <player name>',
+            alliases: [ 'player', 'p' ] ,
             ownerOnly: false,
             channelTypes: [ 'text' ]
         });
@@ -39,14 +39,14 @@ class PlayerCommand extends Command {
         try {
             const data = await this.client.social.getUser(name);
             const buffer = this.client.renderer.drawPlayerImage(data);
-            const attachment = await new Attachment(buffer, `Krunky-player_${name}.png`);
+            const attachment = await new Attachment(buffer, `Krunky-stas_${name}.png`);
 
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occurred getting player ${name}`);
+            message.channel.send(`An error occurred getting stats for player ${name}`);
         }
     }
 }
 
-module.exports = PlayerCommand;
+module.exports = StatsCommand;
