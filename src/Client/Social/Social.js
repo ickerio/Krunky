@@ -50,7 +50,7 @@ class Social {
                     featured: user.player_featured,
                     clan: user.player_clan,
                     attribute: this.getLevel(user.player_score) || user.player_funds || user.player_kills || user.player_timeplayed || user.player_wins,
-                    hacker: user.player_hack ? user.player_hack : 'No'
+                    hacker: user.player_hack
                 });
             });
         }
@@ -76,7 +76,7 @@ class Social {
             krunkies: data.player_funds,
             clan: data.player_clan,
             featured: data.player_featured,
-            hacker: data.player_hack ? data.player_hack : 'No'
+            hacker: data.player_hack
         };
     }
 
