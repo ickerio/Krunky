@@ -2,7 +2,7 @@ const Command = require('../Client/Command.js');
 const { Attachment } = require('discord.js');
 const Cache = require('../Util/Cache/Cache.js');
 
-const cache = new Cache(60 * 1000);
+const cache = new Cache(15 * 60 * 1000);
 
 class LeaderboardCommand extends Command {
     constructor(client) {

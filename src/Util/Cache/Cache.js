@@ -11,7 +11,7 @@ class Cache {
     }
 
     set(key, value) {
-        if (this.map.has(key)) clearTimeout(this.map.get(key).timeout)
+        if (this.map.has(key)) clearTimeout(this.map.get(key).timeout);
         return this.map.set(key, new CacheItem(key, value, this));
     }
 
