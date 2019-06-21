@@ -6,7 +6,7 @@ class SettingsCommand extends Command {
         super(client, {
             name: 'Settings',
             useName: 'settings',
-            description: 'Customize the bot for you and your guild',
+            description: 'Customize the bot for you and your server',
             args: { 
                 option: { required: false },
                 value: { required: false }
