@@ -3,7 +3,7 @@ const Request = require('./Request.js');
 const Message = require('./Message.js');
 
 const ratelimit = 1000; // 1 second
-const timeoutPeriod = 3000; // 3 seconds
+const timeoutPeriod = 10 * 1000; // 3 seconds
 
 class SocialRequest {
     constructor() {
@@ -56,7 +56,7 @@ class SocialRequest {
         const data = Message.decode(buf);
         if (!data) return;
 
-        const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan'].includes(data[1][1]);
+        const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan', 'player_wins'].includes(data[1][1]);
 
         const req = this.queue.find(r => r.endpoint === data[1][0] && `${prefix ? 'player_' : ''}${r.query}` === data[1][1]);
         if (!req) return;

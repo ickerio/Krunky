@@ -97,7 +97,8 @@ class Social {
             kills: { alias: ['kills', 'kill'], name: 'Kills', unit: 'Kills' },
             timeplayed: { alias: ['timeplayed', 'time'], name: 'Time Played', unit: '' },
             funds: { alias: ['krunkies', 'money', 'funds'], name: 'Krunkies', unit: 'KR' },
-            clan: { alias: ['clan', 'clans'], name: 'Clans', unit: 'Score' }
+            clan: { alias: ['clan', 'clans'], name: 'Clans', unit: 'Score' },
+            wins: { alias: ['wins', 'win'], name: 'Wins', unit: 'Wins' }
         };
         
         const map = new Map();
