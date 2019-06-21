@@ -26,10 +26,10 @@ class StatsCommand extends Command {
         if (!name || message.mentions.users.size) {
             try {
                 const result = await this.client.database.userGet(name ? message.mentions.users.first().id : message.author.id, 'KrunkerName');
-                if (!result) return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`); // change throw error
+                if (!result) return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername\``); // change throw error
                 name = result;
             } catch (error) {
-                return message.channel.send(`No \`player name\` provided and no \`username\` set in ${message.prefix}settings`);
+                return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername\``);
             }
         }
 
@@ -45,7 +45,7 @@ class StatsCommand extends Command {
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occurred getting stats for player ${name}`);
+            message.channel.send(`Error. Couldn't get stats for ${name}`);
         }
     }
 }
