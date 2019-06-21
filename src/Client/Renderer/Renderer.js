@@ -27,6 +27,11 @@ class Canvas {
         this.canvas = createCanvas(400, 400);
         this.context = this.canvas.getContext('2d');
 
+        this.context.patternQuality = 'good';
+        this.context.quality = 'good';
+        this.context.textDrawingMode = 'glyph';
+        this.context.antialias = 'default';
+
         // Load krunker coin icon.
         const krIconData = fs.readFileSync('./res/kr-icon.png');
         this.krIcon = new Image();
@@ -114,8 +119,7 @@ class Canvas {
         this.drawStatRow('Time Played:', this.formatTimePlayed(data.playTime), 6, statFontSizePx, 0, 10);
     }
 
-    drawFooter()
-    {
+    drawFooter() {
         this.context.font = '15px FFF Forward';
         this.context.fillStyle = '#b0b0b0';
 
@@ -321,15 +325,13 @@ class Canvas {
         return str;
     }
 
-    drawLeaderboardTitle(board)
-    {
+    drawLeaderboardTitle(board) {
         this.context.font = `${board.length < 8  ? lbTitleFontSizePx : lbTitleFontSize2Px}px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
         this.context.fillText(board.name.charAt(0).toUpperCase() + board.name.slice(1) + ' Leaderboard', 2 * padLeft, titleBarHeight / 2 + (board.length < 15  ? lbTitleFontSizePx : lbTitleFontSize2Px) * 0.6);
     }
 
-    async drawLeaderboardList(board)
-    {
+    async drawLeaderboardList(board) {
         const yOffset = -20;
         //this.drawStatRow('', board.unit, 0, statFontSize2Px, 0, yOffset);
         this.context.font = `${statFontSize2Px}px FFF Forward`;
@@ -338,8 +340,7 @@ class Canvas {
             this.canvas.width - padRight - this.context.measureText(board.unit).width,
             titleBarHeight - 4);
         
-        for(let i = 0; i < 10; i++)
-        {
+        for(let i = 0; i < 10; i++) {
             if(board.name == 'Levels') {
                 this.drawLevelLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, board.data[i].attribute, i, statFontSize2Px, 0, yOffset);
             }
