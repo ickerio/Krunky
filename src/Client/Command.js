@@ -10,7 +10,7 @@ class Command {
         this.usage = options.usage || '<command> <args>';
         this.alliases = options.alliases || [];
         this.uses = options.uses || 15;
-        this.cooldown = option.cooldown || 60 * 1000;
+        this.cooldown = options.cooldown || 60 * 1000;
         this.ownerOnly = options.ownerOnly || false;
         this.channelTypes = options.channelTypes || ['dm', 'group', 'text'];
 
