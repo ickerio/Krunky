@@ -3,7 +3,7 @@ const Request = require('./Request.js');
 const Message = require('./Message.js');
 
 const ratelimit = 1000; // 1 second
-const timeoutPeriod = 10 * 1000; // 3 seconds
+const timeoutPeriod = 3000; // 3 seconds
 
 class SocialRequest {
     constructor() {
