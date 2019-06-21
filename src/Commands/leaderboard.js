@@ -33,7 +33,6 @@ class LeaderboardCommand extends Command {
             message.channel.send(attachment);
         } catch (error) {
             message.channel.send(`An error occurred getting board ${args.board}`);
-            console.log(error);
         }
     }
 }
