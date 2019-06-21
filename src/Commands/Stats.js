@@ -11,10 +11,11 @@ class StatsCommand extends Command {
             useName: 'stats',
             description: 'Shows player stats, levelling and funds',
             args: { name: { required: false }},
-    
             type: 'Krunker',
             usage: 'stats <player name>',
             alliases: [ 'player', 'p' ] ,
+            uses: 8,
+            cooldown: 60 * 1000,
             ownerOnly: false,
             channelTypes: [ 'text' ]
         });

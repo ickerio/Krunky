@@ -8,7 +8,6 @@ class HelpCommand extends Command {
             useName: 'help',
             description: 'Shows bot info and commands',
             args: {},
-    
             type: 'Util',
             usage: 'help',
             alliases: [
@@ -16,8 +15,10 @@ class HelpCommand extends Command {
                 'invite', 'add', 
                 'dev', 'developer', 'developers'
             ],
+            uses: 15,
+            cooldown: 60 * 1000,
             ownerOnly: false,
-            channelTypes: ['dm', 'group', 'text']
+            channelTypes: [ 'dm', 'group', 'text' ]
         });
     }
 

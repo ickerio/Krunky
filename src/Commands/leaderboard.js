@@ -11,10 +11,11 @@ class LeaderboardCommand extends Command {
             useName: 'leaderboard',
             description: 'Shows top players for the leaderboard type\n*Types*: level, kills, wins, time, krunkies, clans.',
             args: { board: { required: true }},
-            
             type: 'Krunker',
             usage: 'leaderboard <board name>',
             alliases: [ 'lb' ],
+            uses: 8,
+            cooldown: 60 * 1000,
             ownerOnly: false,
             channelTypes: [ 'text' ]
         });

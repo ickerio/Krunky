@@ -11,12 +11,13 @@ class SettingsCommand extends Command {
                 option: { required: false },
                 value: { required: false }
             },
-    
             type: 'Utility',
             usage: 'settings <optional setting name>',
             alliases: [ 'setting' ],
+            uses: 15,
+            cooldown: 60 * 1000,
             ownerOnly: false,
-            channelTypes: ['text']
+            channelTypes: [ 'text' ]
         });
     }
 

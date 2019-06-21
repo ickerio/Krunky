@@ -45,12 +45,25 @@ class KrunkyClient extends Discord.Client {
         const args = message.content.split(/\s+/g);
         const call = args.shift().slice(message.prefix.length).toLowerCase();
     
-        // Find command and issue it
+        // Find command
         const command = this.commands.get(call) || this.commands.get(this.alliases.get(call));
         if (!command) return;
     
+        // Check channel and onwerOnly settings
         if (!command.channelTypes.includes(message.channel.type)) return message.channel.send('This command cannot be used in this channel type');
         if (command.ownerOnly && !(this.config.OWNERS.includes(message.author.id))) return;
+
+        // Ratelimiting
+        const now = new Date().getTime();
+        if (!command.ratelimit.has(message.author.id) || now > command.ratelimit.get(message.author.id).expiry) {
+            command.ratelimit.set(message.author.id, { uses: command.uses - 1, expiry: now + command.cooldown });
+        } else if (command.ratelimit.get(message.author.id).uses === 0) {
+            return message.channel.send(`You are being ratelimited. Max ${command.uses} uses in ${command.cooldown / 1000} seconds`);
+        } else {
+            const current = command.ratelimit.get(message.author.id);
+            current.uses -= 1;
+            command.ratelimit.set(message.author.id, current);
+        }
         
         // Translate args array to object
         const argsObj = {};
