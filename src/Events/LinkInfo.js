@@ -1,4 +1,7 @@
 const { RichEmbed } = require('discord.js');
+const Cache = require('../Util/Cache/Cache.js');
+
+const cache = new Cache(5 * 1000);
 
 async function info(message) {
     const reg = message.content.match(/(krunker\.io\/\?game=)([a-zA-Z]{2,3}:[a-zA-Z0-9]{5})+/);
@@ -6,6 +9,8 @@ async function info(message) {
 
     const setting = message.channel.type == 'text' ?  await this.database.guildGet(message.guild.id, 'LinkInfo') : true;
     if (!setting) return;
+
+    if (cache.has(reg[2].toLowerCase())) return message.channel.send(cache.get(reg[2].toLowerCase()));
 
     try {
         const match = await this.matchmaker.getMatch(reg[2]);
@@ -22,6 +27,7 @@ async function info(message) {
             .setDescription(desc)
             .setColor(this.constants.embedColour);
     
+        cache.set(match.id.toLowerCase(), embed);
         message.channel.send(embed);
     } catch (error) {
         message.channel.send('An error occurred getting that game\'s info');
