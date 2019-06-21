@@ -303,23 +303,21 @@ class Canvas {
         
         for(let i = 0; i < 10; i++)
         {
-            if(board.name == 'Levels')
-            {
+            if(board.name == 'Levels') {
                 this.drawLevelLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, board.data[i].attribute, i, statFontSize2Px, 0, yOffset);
             }
-            else if(board.name == 'Krunkies')
-            {
+            else if(board.name == 'Krunkies') {
                 this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.formatKrunkCoins(board.data[i].attribute), i, statFontSize2Px, 0, yOffset);
             }
-            else if(board.name == 'Time Played')
-            {
-                this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.formatTimePlayed(board.data[i].attribute), i, statFontSize2Px, 0, );
+            else if(board.name == 'Time Played') {
+                this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.formatTimePlayed(board.data[i].attribute), i, statFontSize2Px, 0, yOffset);
             }
-            else
-            {
+            else if(board.name == 'Clans') {
+                this.drawLeaderboardRow(board.data[i].name, '', board.data[i].featured, board.data[i].score, i, statFontSize2Px, 0, yOffset);
+            }
+            else {
                 this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, board.data[i].attribute, i, statFontSize2Px, 0, yOffset);
             }
-            
         }
     }
 } 
