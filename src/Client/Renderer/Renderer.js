@@ -94,7 +94,7 @@ class Canvas {
         }
 
         // Draw player name.
-        this.context.fillStyle = '#FFFFFF';
+        this.context.fillStyle = data.hacker ? '#E45558' : '#FFFFFF';
         this.context.fillText(data.name, padLeft + imagePadRight, playerNameY);
 
         // Draw seperator
@@ -147,21 +147,21 @@ class Canvas {
         // Draw username
         this.context.fillStyle = '#606060';
         this.context.fillText(name, 
-            padLeft + this.context.measureText((rowIndex + 1) +'.').width + 2 * padHorizontal + xOffset, 
+            padLeft + 3 * padHorizontal + xOffset, 
             fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
 
         // Draw clan.
         if (clan) {
             this.context.fillStyle = '#808080';
             this.context.fillText(`[${clan}]`, 
-                padLeft + this.context.measureText((rowIndex + 1) +'.').width + 3 * padHorizontal + xOffset + this.context.measureText(name).width, 
+                padLeft + 4 * padHorizontal + xOffset + this.context.measureText(name).width, 
                 fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
         }
 
         // Draw Verified Symbol.
         if (featured) {
             this.context.drawImage(this.featuredIcon, 
-                padLeft + this.context.measureText((rowIndex + 1) +'.').width + 4 * padHorizontal + xOffset + 
+                padLeft + 5 * padHorizontal + xOffset + 
                 this.context.measureText(name).width + (clan ? this.context.measureText(`[${clan}]`).width : 0), 
                 titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) - 6 + yOffset,
                 featuredImageSize, featuredImageSize);
@@ -184,21 +184,21 @@ class Canvas {
         // Draw username
         this.context.fillStyle = '#606060';
         this.context.fillText(name, 
-            padLeft + this.context.measureText((rowIndex + 1) +'.').width + 2 * padHorizontal + xOffset, 
+            padLeft + 3 * padHorizontal + xOffset, 
             fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
 
         // Draw clan.
         if (clan) {
             this.context.fillStyle = '#808080';
             this.context.fillText(`[${clan}]`, 
-                padLeft + this.context.measureText((rowIndex + 1) +'.').width + 3 * padHorizontal + xOffset + this.context.measureText(name).width, 
+                padLeft + 4 * padHorizontal + xOffset + this.context.measureText(name).width, 
                 fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
         }
 
         // Draw Verified Symbol.
         if (featured) {
             this.context.drawImage(this.featuredIcon, 
-                padLeft + this.context.measureText((rowIndex + 1) +'.').width + 4 * padHorizontal + xOffset + 
+                padLeft + 5 * padHorizontal + xOffset + 
                 this.context.measureText(name).width + (clan ? this.context.measureText(`[${clan}]`).width : 0), 
                 titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) - 6 + yOffset,
                 featuredImageSize, featuredImageSize);
@@ -217,6 +217,43 @@ class Canvas {
             fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
     }
 
+    drawClanLeaderboardRow(clanName, ownerName, featured, stat, rowIndex, fontSize = statFontSizePx,xOffset = 0, yOffset = 0) {
+        this.context.font = `${fontSize}px FFF Forward`;
+        this.context.fillStyle = '#000000';
+        // Draw rank number.
+        this.context.fillText((rowIndex + 1) +'.', 
+            padLeft, 
+            fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
+        // Draw clan name
+        this.context.fillStyle = '#808080';
+        this.context.fillText(`[${clanName}]`, 
+            padLeft + 3 * padHorizontal + xOffset, 
+            fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
+
+        // Draw owner.
+        if (ownerName) {
+            this.context.fillStyle = '#606060';
+            this.context.fillText(`by ${ownerName}`, 
+                padLeft + 4 * padHorizontal + xOffset + this.context.measureText(`[${clanName}]`).width, 
+                fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
+        }
+
+        // Draw Verified Symbol.
+        if (featured) {
+            this.context.drawImage(this.featuredIcon, 
+                padLeft + 5 * padHorizontal + xOffset + 
+                this.context.measureText(`[${clanName}]`).width + (ownerName ? this.context.measureText(`by ${ownerName}`).width : 0), 
+                titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) - 6 + yOffset,
+                featuredImageSize, featuredImageSize);
+        }
+
+        // Draw stat
+        this.context.fillStyle = '#000000';
+        this.context.fillText(stat, 
+            this.canvas.width - padRight - this.context.measureText(stat).width, 
+            fontSize + titleBarHeight + (rowIndex + 1) * (fontSize + padVertical) + yOffset);
+    }
+
     drawKrunkCoins(data) {
         // Draw krunk coin icon.
         this.context.drawImage(this.krIcon, padLeft + imagePadRight + this.context.measureText(data.name.length > `[${data.clan}]`.length ? data.name : `[${data.clan}]`).width + padHorizontal * 2 + separatorWidth, 
@@ -227,12 +264,12 @@ class Canvas {
         const xOffset = padLeft + imageSize + imagePadRight + this.context.measureText(data.name.length > `[${data.clan}]`.length ? data.name : `[${data.clan}]`).width + padHorizontal * 3 + separatorWidth;
         this.context.font = `${ titleFontSizePx }px FFF Forward`;
         this.context.fillStyle = '#FFFFFF';
-        this.context.fillText(this.formatKrunkCoins(data.krunkies), xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
+        this.context.fillText(this.shortenNumber(data.krunkies), xOffset, titleBarHeight / 2 + titleFontSizePx / 2);
 
         return xOffset + this.context.measureText(data.krunkies).width;
     }
 
-    formatKrunkCoins(krunkies)
+    shortenNumber(krunkies)
     {
         // Get abbreviation for coin amount.
         let text = '';
@@ -307,13 +344,13 @@ class Canvas {
                 this.drawLevelLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, board.data[i].attribute, i, statFontSize2Px, 0, yOffset);
             }
             else if(board.name == 'Krunkies') {
-                this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.formatKrunkCoins(board.data[i].attribute), i, statFontSize2Px, 0, yOffset);
+                this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.shortenNumber(board.data[i].attribute), i, statFontSize2Px, 0, yOffset);
             }
             else if(board.name == 'Time Played') {
                 this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, this.formatTimePlayed(board.data[i].attribute), i, statFontSize2Px, 0, yOffset);
             }
             else if(board.name == 'Clans') {
-                this.drawLeaderboardRow(board.data[i].name, '', board.data[i].featured, board.data[i].score, i, statFontSize2Px, 0, yOffset);
+                this.drawClanLeaderboardRow(board.data[i].name, board.data[i].creatorname, board.data[i].featured, this.shortenNumber(board.data[i].score), i, statFontSize2Px, 0, yOffset);
             }
             else {
                 this.drawLeaderboardRow(board.data[i].name, board.data[i].clan, board.data[i].featured, board.data[i].attribute, i, statFontSize2Px, 0, yOffset);
