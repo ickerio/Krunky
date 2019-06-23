@@ -7,11 +7,22 @@ class Util {
         console.log(options.simple ? text : `${new Date().toUTCString()} [${options.id}] - ${text}`);
     }
 
-    static postStats(id, shards, token) {
-        return fetch(`https://discordbots.org/api/bots/${id}/stats`, {
+    static DBLpostStats(id, shards, token) {
+        fetch(`https://discordbots.org/api/bots/${id}/stats`, {
             method: 'POST',
             body: JSON.stringify({ shards }),
             headers: { Authorization: token }
+        });
+    }
+
+    static BODpostStats(id, guildCount, token) {
+        fetch(`https://bots.ondiscord.xyz/bot-api/bots/${id}/guilds`, {
+            method: 'POST',
+            body: JSON.stringify({ guildCount }),
+            headers: { 
+                Authorization: token,
+                'Content-Type': 'application/json'
+            }
         });
     }
 }

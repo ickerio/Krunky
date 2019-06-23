@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
-const { log, postStats } = require('./Util/Util.js');
+const { log, DBLpostStats, BODpostStats } = require('./Util/Util.js');
 
 const manager = new Discord.ShardingManager('./src/shard.js', {
     token: config.TOKEN,
@@ -25,6 +25,8 @@ async function checkReady() {
 
 async function postInterval() {
     const shards = await manager.fetchClientValues('guilds.size');
-    await postStats(config.ID, shards, config.DBL_TOKEN);
+    const guildCount = shards.reduce((prev, count) => prev + count, 0);
+    await DBLpostStats(config.ID, shards, config.DBL_TOKEN);
+    await BODpostStats(config.ID, guildCount, config.BOD_TOKEN);
     setTimeout(() => postInterval(), 1000 );
 }
