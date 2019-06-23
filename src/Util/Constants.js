@@ -1,8 +1,8 @@
-module.exports = (client) => { return {
+module.exports = {
     embedColour: '#FFCA18',
-    inviteBotUrl: `https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=281600`,
+    inviteBotUrl: id => `https://discordapp.com/oauth2/authorize?client_id=${id}&scope=bot&permissions=281600`,
     devServerUrl: 'https://discord.gg/zJx726N',
-    voteUrl: 'https://discordbots.org/bot/588009094858670100',
+    voteUrl: id => `https://discordbots.org/bot/${id}`,
     embedImages: {
         helpThumbnail: 'https://cdn.discordapp.com/attachments/589249378288533515/589696175985262622/krunky-help.png',
         helpFooter: 'https://cdn.discordapp.com/attachments/589249378288533515/589698788285874176/krunky-dev.png',
@@ -27,4 +27,4 @@ module.exports = (client) => { return {
         'us-fl': 'Miami',
         sgp: 'Singapore'
     }
-};};
+};

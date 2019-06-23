@@ -15,7 +15,8 @@
     "eslint": "^5.16.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node src/shard.js",
+    "prod": "node src/krunky.js"
   },
   "author": "ickerio",
   "license": "ISC"

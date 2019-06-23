@@ -1,6 +1,8 @@
 {
     "TOKEN": "Discord Token",
+    "ID": "author id",
     "OWNER": ["owner 1', "owner 2"],
+    "DBL_TOKEN": "discordbots.org bot token",
     "DEFAULT_PREFIX": "?",
     "GAME": ["name", {type: ""}]
 }

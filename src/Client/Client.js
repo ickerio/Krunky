@@ -22,7 +22,7 @@ class KrunkyClient extends Discord.Client {
         log(`Logged in as ${this.user.tag}!`, this.shard);
         this.user.setActivity(...this.config.GAME);
 
-        this.constants = Constants(this);
+        this.constants = Constants;
         this.database = new Database();
         this.matchmaker = new Matchmaker(this);
         this.renderer = new Renderer();

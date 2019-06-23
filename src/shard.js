@@ -1,7 +1,8 @@
 const Krunky = require('./Client/Client.js');
+const config = require('../config.json');
 
 const client = new Krunky({
-    config: require('../config.json'),
+    config,
     disabledEvents: [
         'TYPING_START'
     ],
@@ -12,4 +13,4 @@ const client = new Krunky({
 client.registerCommands();
 client.registerEvents();
 
-client.login(process.argv[2]);
+client.login(process.argv[2] || config.TOKEN);
