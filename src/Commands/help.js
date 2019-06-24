@@ -8,7 +8,7 @@ class HelpCommand extends Command {
             useName: 'help',
             description: 'Shows bot info and commands',
             args: {},
-            type: 'Util',
+            type: 'Utility',
             usage: 'help',
             alliases: [
                 'info', 'about', 
