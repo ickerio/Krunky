@@ -13,7 +13,7 @@ class StatsCommand extends Command {
             args: { name: { required: false }},
             type: 'Krunker',
             usage: 'stats <player name>',
-            alliases: [ 'player', 'p' ] ,
+            alliases: [ 's', 'player' ] ,
             uses: 8,
             cooldown: 60 * 1000,
             ownerOnly: false,
@@ -45,7 +45,7 @@ class StatsCommand extends Command {
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`Error. Couldn't get stats for ${name}`);
+            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get stats for ${name}`);
         }
     }
 }
