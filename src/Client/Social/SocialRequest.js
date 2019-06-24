@@ -56,6 +56,7 @@ class SocialRequest {
     message(buf) {
         const data = Message.decode(buf);
         if (!data) return;
+        if (data === [ 'pi', [] ]) return this.pong();
 
         const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan', 'player_wins'].includes(data[1][1]);
 
@@ -65,6 +66,10 @@ class SocialRequest {
         req.resolve(data);
         clearTimeout(req.timeout);
         this.queue = this.queue.filter(r => r !== req);
+    }
+
+    pong() {
+        this.ws.send(Message.encode([ 'po', [] ]));
     }
 
     nextRequest() {
