@@ -45,7 +45,7 @@ class StatsCommand extends Command {
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get stats for ${name}`);
+            message.channel.send(`Unknown error. Couldn't get stats for ${name}`);
         }
     }
 }

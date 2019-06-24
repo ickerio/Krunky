@@ -25,7 +25,6 @@ class SocialRequest {
     }
 
     addRequest(data, resolve, reject) {
-        if (this.ws.readyState.CLOSED) return reject({ err: 'Sorry, krunker.io servers are down!'});
         const existing = this.queue.find(r => r.endpoint === data.endpoint && r.query === data.query);
         if (existing) return existing.addListener(resolve, reject);
 

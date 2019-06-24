@@ -11,7 +11,7 @@ log(`Krunky starting with ${manager.totalShards} shards`, { id: 'M' });
 
 manager.on('launch', s => log('Launched', s));
 
-manager.spawn()//.then(() => checkReady());
+manager.spawn().then(() => checkReady());
 
 async function checkReady() {
     const values = await manager.fetchClientValues('readyAt');
