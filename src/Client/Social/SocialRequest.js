@@ -58,8 +58,7 @@ class SocialRequest {
 
     message(buf) {
         const data = Message.decode(buf);
-        if (!data) return;
-        if (data === [ 'pi', [] ]) return this.pong();
+        if (data.toString() === [ 'pi', [] ].toString()) return this.pong();
 
         const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan', 'player_wins'].includes(data[1][1]);
 
