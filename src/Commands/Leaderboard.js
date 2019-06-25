@@ -22,14 +22,15 @@ class LeaderboardCommand extends Command {
     }
 
     async run(message, { board }) {
-        if (cache.has(board)) return message.channel.send(cache.get(board));
+        const formal = this.client.social.boardsAlias.get(board).name;
+        if (cache.has(formal)) return message.channel.send(cache.get(formal));
 
         try {
             const boardData = await this.client.social.getLeaderboard(board);
             const buffer = await this.client.renderer.drawLeaderboardImage(boardData);
             const attachment = await new Attachment(buffer, `Krunky-leaderboard_${boardData.name}.png`);
 
-            cache.set(this.client.social.boardsAlias.get(name).name, attachment);
+            cache.set(formal, attachment);
             message.channel.send(attachment);
         } catch (error) {
             message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get leaderboard ${board}`);
