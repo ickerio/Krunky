@@ -17,8 +17,10 @@ class Matchmaker {
     }
 
     async onInterval() {
-        const matches = await this.fetchMatches();
-        this.stats = this.getStats(matches);
+        try {
+            const matches = await this.fetchMatches();
+            this.stats = this.getStats(matches);
+        } catch (error) { }
     }
 
     async fetchMatches() {
