@@ -21,9 +21,11 @@ class SocialRequest {
 
         this.ws.on('message', buf => this.message(buf));
         this.ws.on('open', () => this.nextRequest());
+        this.ws.on('error', () => setTimeout(() => this.connect(), 60 * 1000));
     }
 
     addRequest(data, resolve, reject) {
+        if (this.ws.readyState.CLOSED) return reject({ err: 'Sorry, krunker.io servers are down!'});
         const existing = this.queue.find(r => r.endpoint === data.endpoint && r.query === data.query);
         if (existing) return existing.addListener(resolve, reject);
 
@@ -44,7 +46,7 @@ class SocialRequest {
         this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '000000', null ]]));
 
         req.timeout = setTimeout(() => {
-            req.reject('Timeout. Social API did not return data');
+            req.reject({ err: 'Player does not exist!'});
             this.queue = this.queue.filter(r => r !== req);
         }, timeoutPeriod);
 
