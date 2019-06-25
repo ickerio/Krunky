@@ -41,7 +41,7 @@ class SocialRequest {
         if (this.ws.readyState === WebSocket.CLOSING || this.ws.readyState === WebSocket.CLOSED) return this.connect();
 
 
-        this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '', null ]]));
+        this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '000000', null ]]));
 
         req.timeout = setTimeout(() => {
             req.reject('Timeout. Social API did not return data');
