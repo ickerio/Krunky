@@ -32,7 +32,7 @@ class LeaderboardCommand extends Command {
             cache.set(args.board, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`An error occurred getting board ${args.board}`);
+            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get leaderboard ${args.board}`);
         }
     }
 }

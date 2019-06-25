@@ -16,16 +16,18 @@ class SocialRequest {
     }
 
     connect() {
-        this.ws = new WebSocket('wss://krunker_social.krunker.io/ws');
+        this.ws = new WebSocket('wss://krunker_social.krunker.io/ws', {
+            handshakeTimeout: 100
+        });
         this.ws.binaryType = 'arraybuffer';
 
         this.ws.on('message', buf => this.message(buf));
         this.ws.on('open', () => this.nextRequest());
-        this.ws.on('error', () => setTimeout(() => this.connect(), 60 * 1000));
+        this.ws.on('error', () => this.error());
     }
 
     addRequest(data, resolve, reject) {
-        if (this.ws.readyState.CLOSED) return reject({ err: 'Sorry, krunker.io servers are down!'});
+        if (this.ws.readyState.CLOSED) return reject({ err: 'Krunker.io servers are down'});
         const existing = this.queue.find(r => r.endpoint === data.endpoint && r.query === data.query);
         if (existing) return existing.addListener(resolve, reject);
 
@@ -46,7 +48,7 @@ class SocialRequest {
         this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '000000', null ]]));
 
         req.timeout = setTimeout(() => {
-            req.reject({ err: 'Player does not exist!'});
+            req.reject({ err: 'Item does not exist'});
             this.queue = this.queue.filter(r => r !== req);
         }, timeoutPeriod);
 
@@ -71,6 +73,12 @@ class SocialRequest {
     nextRequest() {
         if (this.sendInterval) clearTimeout(this.sendInterval);
         this.sendInterval = setTimeout(() => this.send(), ratelimit);
+    }
+
+    error() {
+        this.ws.terminate();
+        this.queue.forEach(r => r.reject({ err: 'Krunker.io servers are down' }));
+        setTimeout(() => this.connect(), 15 * 1000);
     }
 
 }
