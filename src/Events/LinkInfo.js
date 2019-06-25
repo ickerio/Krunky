@@ -4,6 +4,8 @@ const Cache = require('../Util/Cache/Cache.js');
 const cache = new Cache(5 * 1000);
 
 async function info(message) {
+    if (message.author.bot) return;
+    
     const reg = message.content.match(/(krunker\.io\/\?game=)([a-zA-Z]{2,3}:[a-zA-Z0-9]{5})+/);
     if (!reg) return;
 
