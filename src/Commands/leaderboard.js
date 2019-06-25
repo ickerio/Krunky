@@ -21,18 +21,18 @@ class LeaderboardCommand extends Command {
         });
     }
 
-    async run(message, args) {
-        if (cache.has(args.board)) return message.channel.send(cache.get(args.board));
+    async run(message, { board }) {
+        if (cache.has(board)) return message.channel.send(cache.get(board));
 
         try {
-            const board = await this.client.social.getLeaderboard(args.board);
-            const buffer = await this.client.renderer.drawLeaderboardImage(board);
-            const attachment = await new Attachment(buffer, `Krunky-leaderboard_${board.name}.png`);
+            const boardData = await this.client.social.getLeaderboard(board);
+            const buffer = await this.client.renderer.drawLeaderboardImage(boardData);
+            const attachment = await new Attachment(buffer, `Krunky-leaderboard_${boardData.name}.png`);
 
-            cache.set(args.board, attachment);
+            cache.set(this.client.social.boardsAlias.get(name).name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get leaderboard ${args.board}`);
+            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get leaderboard ${board}`);
         }
     }
 }
