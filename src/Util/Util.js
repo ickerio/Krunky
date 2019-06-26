@@ -7,10 +7,10 @@ class Util {
         console.log(options.simple ? text : `${new Date().toUTCString()} [${options.id}] - ${text}`);
     }
 
-    static DBLpostStats(id, shards, token) {
+    static DBLpostStats(id, guildCount, token) {
         fetch(`https://discordbots.org/api/bots/${id}/stats`, {
             method: 'POST',
-            body: JSON.stringify({ shards }),
+            body: JSON.stringify({ guild_count: guildCount }),
             headers: { Authorization: token }
         });
     }
