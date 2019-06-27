@@ -2,9 +2,17 @@ const { Collection } = require('discord.js');
 const readdir = require('util').promisify(require('fs').readdir);
 
 class CommandHandler {
-    constructor(client) {
+    constructor(client, options = {}) {
         this.commands = new Collection();
         this.alliases = new Collection();
+
+        this.options = Object.assign(options, {
+            prefix: 'kr!',
+            directory: './src/Commands/',
+            ignoreRatelimit: [],
+            oweners: [],
+            allowMention: true
+        });
 
         this.registerCommands();
 
@@ -34,8 +42,6 @@ class CommandHandler {
         if (this.shouldIgnoreMessage(message, prefix)) return;
     
         const [ call, args ] = this.extractDetails(message, prefix);
-
-        console.log(call, args);
     
         const command = this.findCommand(call);
         if (!command) return;
@@ -66,13 +72,12 @@ class CommandHandler {
 
     async findPrefix(message) {
         const me = this.client.user.toString();
-        console.log(me, message.content, message.content.startsWith(me));
-        if (message.content.startsWith(me)) {
+        if (message.content.startsWith(me) && this.config.allowMention) {
             return `${me} `;
         } else if (message.channel.type === 'text') {
             return await this.client.database.guildGet(message.guild.id, 'Prefix');
         } else {
-            return this.client.config.DEFAULT_PREFIX;
+            return this.options.prefix;
         }
     }
 
@@ -100,10 +105,11 @@ class CommandHandler {
     }
 
     shouldIgnoreCommand(command, message) {
-        return !command.channelTypes.includes(message.channel.type) || (command.ownerOnly && !this.client.config.OWNERS.includes(message.author.id))
+        return !command.channelTypes.includes(message.channel.type) || (command.ownerOnly && !this.config.owners.includes(message.author.id));
     }
 
     doRateLimiting(command, authorId) {
+        if (this.config.ignoreRatelimit.includes(authorId)) return false;
         const now = new Date().getTime();
         const limit = command.ratelimit.get(authorId);
         if (!limit || now > limit.expiry) {
