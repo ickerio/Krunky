@@ -76,7 +76,9 @@ class Social {
             krunkies: data.player_funds,
             clan: data.player_clan,
             featured: data.player_featured,
-            hacker: data.player_hack
+            hacker: data.player_hack,
+            following: data.following,
+            followed: data.followed
         };
     }
 
