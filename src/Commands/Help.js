@@ -38,7 +38,7 @@ class HelpCommand extends Command {
             .setThumbnail(constants.embedImages.helpThumbnail)
             .setColor(constants.embedColour);
 
-        this.client.commands
+        this.client.commandHandler.commands
             .filter(command => command.name !== 'Help' && command.ownerOnly != true)
             .forEach(command => 
                 embed.addField(message.prefix + command.usage, command.description)
