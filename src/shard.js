@@ -1,13 +1,18 @@
 const Krunky = require('./Client/Client.js');
-const config = require('../config.json');
 
 const client = new Krunky({
-    config,
-    disabledEvents: [
-        'TYPING_START'
-    ],
-    messageCacheLifetime: 60,
-    messageSweepInterval: 60
+    owners: ['507173409159905280', '224452565608300544'],
+    game: ['Krunker.io', { type: 'PLAYING' }],
+    commandHandler: {
+        prefix: '!kr ',
+        directory: './src/Commands/',
+        ignoreRatelimit: [],
+        oweners: [],
+        allowMention: true
+    },
+    eventHandler: {
+        directory: './src/Events/'
+    }
 });
 
-client.login(process.argv[2] || config.TOKEN);
+client.login();

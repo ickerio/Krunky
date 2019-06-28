@@ -1,33 +1,60 @@
 const Discord = require('discord.js');
-const config = require('../config.json');
-const { log, DBLpostStats, BODpostStats } = require('./Util/Util.js');
+const fetch = require('node-fetch');
+const auth = require('../auth.json');
+const Logger = require('./Util/Logger.js');
 
-const manager = new Discord.ShardingManager('./src/shard.js', {
-    token: config.TOKEN,
-    shardArgs: [config.TOKEN]
-});
+class KrunkyManager extends Discord.ShardingManager{
+    constructor(file, options) {
+        super(file, options);
+        Logger.startup(this.totalShards);
 
-log(`Krunky starting with ${manager.totalShards} shards`, { id: 'M' });
+        this.on('launch', this.shardLaunch.bind(this));
+    }
 
-manager.on('launch', s => log('Launched', s));
+    shardLaunch(shard) {
+        Logger.launch(shard);
+    }
 
-manager.spawn().then(() => checkReady());
+    async checkReady() {
+        const values = await this.fetchClientValues('readyAt');
+        const allReady = values.every(r => r !== null);
+        if (allReady) {
+            this.postStats();
+        } else {
+            setTimeout(() => this.checkReady(), 5000);
+        }
+    }
 
-async function checkReady() {
-    const values = await manager.fetchClientValues('readyAt');
-    const allReady = values.every(r => r !== null);
-    if (allReady) {
-        postInterval();
-    } else {
-        setTimeout(() => checkReady(), 5000);
+    async postStats(id = auth.BOT_ID) {
+        const shards = await this.fetchClientValues('guilds.size');
+        const guildCount = shards.reduce((prev, count) => prev + count, 0);
+
+        fetch(`https://discordbots.org/api/bots/${id}/stats`, {
+            method: 'POST',
+            body: JSON.stringify({ guild_count: guildCount }),
+            headers: { Authorization: auth.DBL_TOKEN }
+        });
+
+        fetch(`https://bots.ondiscord.xyz/bot-api/bots/${id}/guilds`, {
+            method: 'POST',
+            body: JSON.stringify({ guildCount }),
+            headers: { 
+                Authorization: auth.BOD_TOKEN,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        setTimeout(() => this.postStats(), 1.8e+6 );
+    }
+
+    init() {
+        super.spawn()
+            .then(this.checkReady.bind(this));
     }
 }
 
-async function postInterval() {
-    const shards = await manager.fetchClientValues('guilds.size');
-    const guildCount = shards.reduce((prev, count) => prev + count, 0);
+const Krunky = new KrunkyManager('./src/shard.js', {
+    token: auth.DISCORD_TOKEN,
+});
 
-    await DBLpostStats(config.ID, guildCount, config.DBL_TOKEN);
-    await BODpostStats(config.ID, guildCount, config.BOD_TOKEN);
-    setTimeout(() => postInterval(), 1.8e+6 );
-}
+Krunky.init();

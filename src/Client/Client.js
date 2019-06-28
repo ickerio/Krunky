@@ -1,18 +1,18 @@
-const { Client } = require('discord.js');
+const Discord = require('discord.js');
 const CommandHandler = require('./CommandHandler.js');
-const EventHandler = require('./EventHandler.js')
-const { log } = require('../Util/Util.js');
+const EventHandler = require('./EventHandler.js');
 
+const Logger = require('../Util/Logger.js');
 const Constants = require('../Util/Constants.js');
+
 const Database = require('./Database/Database.js');
 const Matchmaker = require('./Matchmaker/Matchmaker.js');
 const Renderer = require('./Renderer/Renderer.js');
 const Social = require('./Social/Social.js');
 
-class KrunkyClient extends Client {
+class KrunkyClient extends Discord.Client {
     constructor(options = {}) {
         super(options);
-        this.config = options.config;
 
         this.constants = Constants;
         this.database = new Database();
@@ -20,25 +20,20 @@ class KrunkyClient extends Client {
         this.renderer = new Renderer();
         this.social = new Social();
 
-        this.commandHandler = new CommandHandler(this, {
-            prefix: '!kr ',
-            directory: './src/Commands/',
-            ignoreRatelimit: [],
-            oweners: [],
-            allowMention: true
-        });
+        this.commandHandler = new CommandHandler(this, options.commandHandler);
+        this.eventHandler = new EventHandler(this, options.eventHandler);
 
-        this.eventHandler = new EventHandler(this, {
-            directory: './src/Events/'
-        });
-
-        this.on('ready', this.nowReady);
-        this.on('error', process.exit);
+        this.on('ready', this.ready);
+        this.on('error', this.error);
     }
 
-    nowReady() {
-        log(`Logged in as ${this.user.tag}!`, this.shard);
-        this.user.setActivity(...this.config.GAME);
+    ready() {
+        Logger.login(this.user.tag);
+        this.user.setActivity(...this.options.game);
+    }
+
+    error(error) {
+        Logger.error(error);
     }
     
     async login(token) {

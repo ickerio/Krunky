@@ -26,13 +26,13 @@ class HelpCommand extends Command {
         const constants = this.client.constants;
 
         const desc = [
-            `[Invite Krunky](${constants.inviteBotUrl(this.client.config.ID)}) to your server`,
+            `[Invite Krunky](${constants.inviteBotUrl(this.client.user.id)}) to your server`,
             `[Dev Server](${constants.devServerUrl}) for help and suggestions`,
-            `[Vote](${constants.voteUrl(this.client.config.ID)}) to show your support`
+            `[Vote](${constants.voteUrl(this.client.user.id)}) to show your support`
         ].join('\n');
 
         const embed = new RichEmbed()
-            .setAuthor('Krunker.io discord bot', constants.embedImages.embedHeader, constants.inviteBotUrl(this.client.config.ID))
+            .setAuthor('Krunker.io discord bot', constants.embedImages.embedHeader, constants.inviteBotUrl(this.client.user.id))
             .setDescription(desc)
             .setFooter('ickerio#1498 & JellyAlex#4668', constants.embedImages.helpFooter)
             .setThumbnail(constants.embedImages.helpThumbnail)
