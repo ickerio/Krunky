@@ -9,7 +9,7 @@ class CommandHandler {
         this.options = options;
     }
 
-    async init() {
+    init() {
         this.commands = new Collection();
         this.alliases = new Collection();
 
@@ -17,7 +17,7 @@ class CommandHandler {
         this.client.on('message', this.handle.bind(this));
     }
 
-    async registerCommands() {
+    registerCommands() {
         const files = fs.readdirSync(this.options.directory);
         const filepaths = files.map(f => path.resolve(`${this.options.directory}${f}`));
         filepaths.forEach(f => this.addCommand(f));

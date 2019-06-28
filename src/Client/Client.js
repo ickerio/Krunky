@@ -1,6 +1,6 @@
 const { Client } = require('discord.js');
-const readdir = require('util').promisify(require('fs').readdir);
 const CommandHandler = require('./CommandHandler.js');
+const EventHandler = require('./EventHandler.js')
 const { log } = require('../Util/Util.js');
 
 const Constants = require('../Util/Constants.js');
@@ -14,6 +14,12 @@ class KrunkyClient extends Client {
         super(options);
         this.config = options.config;
 
+        this.constants = Constants;
+        this.database = new Database();
+        this.matchmaker = new Matchmaker(this);
+        this.renderer = new Renderer();
+        this.social = new Social();
+
         this.commandHandler = new CommandHandler(this, {
             prefix: '!kr ',
             directory: './src/Commands/',
@@ -22,7 +28,9 @@ class KrunkyClient extends Client {
             allowMention: true
         });
 
-        //this.eventHandler = new EventHandler(th)
+        this.eventHandler = new EventHandler(this, {
+            directory: './src/Events/'
+        });
 
         this.on('ready', this.nowReady);
         this.on('error', process.exit);
@@ -31,30 +39,12 @@ class KrunkyClient extends Client {
     nowReady() {
         log(`Logged in as ${this.user.tag}!`, this.shard);
         this.user.setActivity(...this.config.GAME);
-
-        this.constants = Constants;
-        this.database = new Database();
-        this.matchmaker = new Matchmaker(this);
-        this.renderer = new Renderer();
-        this.social = new Social();
-    }
-
-
-    addEvent(f) {
-        const event = require(`../Events/${f}`);
-        event.forEach(ev => this.on(ev.name, ev.func.bind(this)));
-        delete require.cache[require.resolve(`../Events/${f}`)];
-    }
-
-    registerEvents() {
-        readdir('./src/Events/', (err, files) => {
-            if(!files) return;
-            files.forEach(file => this.addEvent(file));
-        });
     }
     
-    login(token) {
+    async login(token) {
+        await this.database.connect();
         this.commandHandler.init();
+        this.eventHandler.init();
         super.login(token);
     }
 }

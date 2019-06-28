@@ -2,8 +2,7 @@ function newGuild(guild) {
     this.database.guildAdd(guild.id);
 }
 
-async function checkGuilds() {
-    await this.database.connect();
+function checkGuilds() {
     this.guilds.forEach(guild => this.database.guildAdd(guild.id));
 }
 

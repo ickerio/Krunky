@@ -10,6 +10,4 @@ const client = new Krunky({
     messageSweepInterval: 60
 });
 
-client.registerEvents();
-
 client.login(process.argv[2] || config.TOKEN);
