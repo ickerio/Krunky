@@ -77,8 +77,8 @@ class Social {
             clan: data.player_clan,
             featured: data.player_featured,
             hacker: data.player_hack,
-            following: data.following,
-            followed: data.followed
+            following: data.player_following,
+            followed: data.player_followed
         };
     }
 
