@@ -1,39 +1,37 @@
 const { Collection } = require('discord.js');
-const readdir = require('util').promisify(require('fs').readdir);
+const Logger = require('../Util/Logger.js');
+const fs = require('fs');
+const path = require('path');
 
 class CommandHandler {
     constructor(client, options = {}) {
+        this.client = client;
+        this.options = options;
+    }
+
+    async init() {
         this.commands = new Collection();
         this.alliases = new Collection();
 
-        this.options = Object.assign(options, {
-            prefix: 'kr!',
-            directory: './src/Commands/',
-            ignoreRatelimit: [],
-            oweners: [],
-            allowMention: true
-        });
-
         this.registerCommands();
-
-        this.client = client;
-        client.on('message', this.handle.bind(this));
+        this.client.on('message', this.handle.bind(this));
     }
 
     async registerCommands() {
-        const files = await readdir('./src/Commands/');
-        files.forEach(f => this.addCommand(f));
+        const files = fs.readdirSync(this.options.directory);
+        const filepaths = files.map(f => path.resolve(`${this.options.directory}${f}`));
+        filepaths.forEach(f => this.addCommand(f));
     }
 
     addCommand(file) {
         if(file.split('.').slice(-1)[0] !== 'js') return;
-
-        const Command = require(`../Commands/${file}`);
+        
+        const Command = require(file);
         const cmd = new Command(this.client);
         
         this.commands.set(cmd.useName, cmd);
         cmd.alliases.forEach(a => this.alliases.set(a, cmd.useName));
-        delete require.cache[require.resolve(`../Commands/${file}`)];
+        delete require.cache[require.resolve(file)];
     }
 
     async handle(message) {
@@ -48,7 +46,7 @@ class CommandHandler {
 
         if (this.shouldIgnoreCommand(command, message)) return;
 
-        const ratelimit = this.doRateLimiting(command, message);
+        const ratelimit = this.doRateLimiting(command, message.author.id);
         if (ratelimit) {
             return message.channel.send(`You are being ratelimited. Wait ${(ratelimit / 1000).toFixed(1)}s for ${command.uses} more uses`);
         }
@@ -60,19 +58,17 @@ class CommandHandler {
 
         message.prefix = prefix;
     
-        //log(`Command: ${command.name} | Guild: ${message.guild ? message.guild.name : 'DM'} | Author: ${message.author.tag}`, this.client.shard);
         try {
+            Logger.command(message, command, this.client.shard);
             command.run(message, argsObj);
         } catch(error) {
             message.channel.send(`An unknown error occoured whilst running \`${command.name}\` for ${message.author.tag}`);
-            //log(`Error running ${command.name}`);
-            //log(error, {simple: true });
         }
     }
 
     async findPrefix(message) {
         const me = this.client.user.toString();
-        if (message.content.startsWith(me) && this.config.allowMention) {
+        if (message.content.startsWith(me) && this.options.allowMention) {
             return `${me} `;
         } else if (message.channel.type === 'text') {
             return await this.client.database.guildGet(message.guild.id, 'Prefix');
@@ -105,11 +101,11 @@ class CommandHandler {
     }
 
     shouldIgnoreCommand(command, message) {
-        return !command.channelTypes.includes(message.channel.type) || (command.ownerOnly && !this.config.owners.includes(message.author.id));
+        return !command.channelTypes.includes(message.channel.type) || (command.ownerOnly && !this.options.owners.includes(message.author.id));
     }
 
     doRateLimiting(command, authorId) {
-        if (this.config.ignoreRatelimit.includes(authorId)) return false;
+        if (this.options.ignoreRatelimit.includes(authorId)) return false;
         const now = new Date().getTime();
         const limit = command.ratelimit.get(authorId);
         if (!limit || now > limit.expiry) {

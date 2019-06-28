@@ -14,7 +14,15 @@ class KrunkyClient extends Client {
         super(options);
         this.config = options.config;
 
-        this.commandHandler = new CommandHandler(this);
+        this.commandHandler = new CommandHandler(this, {
+            prefix: '!kr ',
+            directory: './src/Commands/',
+            ignoreRatelimit: [],
+            oweners: [],
+            allowMention: true
+        });
+
+        //this.eventHandler = new EventHandler(th)
 
         this.on('ready', this.nowReady);
         this.on('error', process.exit);
@@ -46,6 +54,7 @@ class KrunkyClient extends Client {
     }
     
     login(token) {
+        this.commandHandler.init();
         super.login(token);
     }
 }
