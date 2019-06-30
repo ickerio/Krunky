@@ -1,6 +1,6 @@
-const Command = require('../Client/Command.js');
+const Command = require('../Structs/Command.js');
 const { Attachment } = require('discord.js');
-const Cache = require('../Util/Cache/Cache.js');
+const Cache = require('../../Util/Cache/Cache.js');
 
 const cache = new Cache(60 * 1000);
 
@@ -26,10 +26,10 @@ class StatsCommand extends Command {
         if (!name || message.mentions.users.size) {
             try {
                 const result = await this.client.database.userGet(name ? message.mentions.users.first().id : message.author.id, 'KrunkerName');
-                if (!result) return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername\``); // change throw error
+                if (!result) return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername yourNameHere\``); // change throw error
                 name = result;
             } catch (error) {
-                return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername\``);
+                return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername yourNameHere\``);
             }
         }
 
@@ -40,7 +40,7 @@ class StatsCommand extends Command {
         try {
             const data = await this.client.social.getUser(name);
             const buffer = this.client.renderer.drawPlayerImage(data);
-            const attachment = await new Attachment(buffer, `Krunky-stas_${name}.png`);
+            const attachment = await new Attachment(buffer, `Krunky${name}.png`);
 
             cache.set(name, attachment);
             message.channel.send(attachment);

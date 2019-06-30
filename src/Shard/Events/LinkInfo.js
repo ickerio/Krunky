@@ -1,5 +1,5 @@
 const { RichEmbed } = require('discord.js');
-const Cache = require('../Util/Cache/Cache.js');
+const Cache = require('../../Util/Cache/Cache.js');
 
 const cache = new Cache(5 * 1000);
 

@@ -1,6 +1,6 @@
-const Command = require('../Client/Command.js');
+const Command = require('../Structs/Command.js');
 const { Attachment } = require('discord.js');
-const Cache = require('../Util/Cache/Cache.js');
+const Cache = require('../../Util/Cache/Cache.js');
 
 const cache = new Cache(15 * 60 * 1000);
 
@@ -22,13 +22,16 @@ class LeaderboardCommand extends Command {
     }
 
     async run(message, { board }) {
-        const formal = this.client.social.boardsAlias.get(board).name;
+        const fullBoard = this.client.social.boardsAlias.get(board);
+        if (!fullBoard) return message.channel.send(`Board ${board} does not exist! Use ${message.prefix}help to see board types`);
+
+        const formal = fullBoard.name;
         if (cache.has(formal)) return message.channel.send(cache.get(formal));
 
         try {
             const boardData = await this.client.social.getLeaderboard(board);
             const buffer = await this.client.renderer.drawLeaderboardImage(boardData);
-            const attachment = await new Attachment(buffer, `Krunky-leaderboard_${boardData.name}.png`);
+            const attachment = await new Attachment(buffer, `Krunky${boardData.name}.png`);
 
             cache.set(formal, attachment);
             message.channel.send(attachment);

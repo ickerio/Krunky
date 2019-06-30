@@ -1,5 +1,5 @@
 const { Collection } = require('discord.js');
-const Logger = require('../Util/Logger.js');
+const Logger = require('../../Util/Logger.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -59,7 +59,7 @@ class CommandHandler {
         message.prefix = prefix;
     
         try {
-            Logger.command(message, command, this.client.shard);
+            Logger.command(message, command, this.client.shard.id);
             command.run(message, argsObj);
         } catch(error) {
             message.channel.send(`An unknown error occoured whilst running \`${command.name}\` for ${message.author.tag}`);

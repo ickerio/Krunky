@@ -2,7 +2,7 @@
   "name": "krunky",
   "version": "1.0.0",
   "description": "Discord bot for online fps game Krunker.io",
-  "main": "node src/krunky.js",
+  "main": "node krunky.js",
   "dependencies": {
     "canvas": "^2.5.0",
     "discord.js": "^11.5.1",
@@ -15,8 +15,8 @@
     "eslint": "^5.16.0"
   },
   "scripts": {
-    "dev": "node src/shard.js",
-    "prod": "node src/krunky.js"
+    "dev": "node krunky.js",
+    "prod": "node krunky.js prod"
   },
   "author": "ickerio",
   "license": "ISC"

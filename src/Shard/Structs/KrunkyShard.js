@@ -2,19 +2,18 @@ const Discord = require('discord.js');
 const CommandHandler = require('./CommandHandler.js');
 const EventHandler = require('./EventHandler.js');
 
-const Logger = require('../Util/Logger.js');
-const Constants = require('../Util/Constants.js');
+const Logger = require('../../Util/Logger.js');
 
-const Database = require('./Database/Database.js');
-const Matchmaker = require('./Matchmaker/Matchmaker.js');
-const Renderer = require('./Renderer/Renderer.js');
-const Social = require('./Social/Social.js');
+const Database = require('../../Providers/Database/Database.js');
+const Matchmaker = require('../../Providers/Matchmaker/Matchmaker.js');
+const Renderer = require('../../Providers/Renderer/Renderer.js');
+const Social = require('../../Providers/Social/Social.js');
 
-class KrunkyClient extends Discord.Client {
+class KrunkyShard extends Discord.Client {
     constructor(options = {}) {
         super(options);
 
-        this.constants = Constants;
+        this.constants = options.constants;
         this.database = new Database();
         this.matchmaker = new Matchmaker(this);
         this.renderer = new Renderer();
@@ -28,7 +27,7 @@ class KrunkyClient extends Discord.Client {
     }
 
     ready() {
-        Logger.login(this.user.tag);
+        Logger.login(this.user.tag, this.shard.id);
         this.user.setActivity(...this.options.game);
     }
 
@@ -44,4 +43,4 @@ class KrunkyClient extends Discord.Client {
     }
 }
 
-module.exports = KrunkyClient;
+module.exports = KrunkyShard;

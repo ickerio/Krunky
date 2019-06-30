@@ -1,4 +1,4 @@
-const Command = require('../Client/Command.js');
+const Command = require('../Structs/Command.js');
 const { RichEmbed } = require('discord.js');
 
 class SettingsCommand extends Command {
@@ -47,7 +47,7 @@ class SettingsCommand extends Command {
         this.client.database.definitions
             .filter(def => def.type === 'User')
             .forEach(def => 
-                embed.addField(`${message.prefix}settings ${def.usage}`, def.description)
+                embed.addField(`${message.prefix}settings ${def.usage} yourChoiceHere`, def.description)
             );
         
         message.channel.send(embed);
@@ -62,7 +62,7 @@ class SettingsCommand extends Command {
         this.client.database.definitions
             .filter(def => def.type === 'Guild')
             .forEach(def => 
-                embed.addField(`${message.prefix}settings ${def.usage}`, def.description)
+                embed.addField(`${message.prefix}settings ${def.usage} yourChoiceHere`, def.description)
             );
         
         message.channel.send(embed);

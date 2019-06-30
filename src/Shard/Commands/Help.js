@@ -1,4 +1,4 @@
-const Command = require('../Client/Command.js');
+const Command = require('../Structs/Command.js');
 const { RichEmbed } = require('discord.js');
 
 class HelpCommand extends Command {

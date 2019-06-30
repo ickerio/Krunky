@@ -5,7 +5,7 @@ class Logger {
     }
 
     static command(message, command, shard) {
-        this.log(`C: ${command.name} G: ${message.guild ? message.guild.name : 'DM'} A: ${message.author.tag}`, shard.id || 'N/A');
+        this.log(`C: ${command.name} G: ${message.guild ? message.guild.name : 'DM'} A: ${message.author.tag}`, shard);
     }
 
     static login(tag, shard) {
