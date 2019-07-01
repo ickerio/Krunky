@@ -9,7 +9,7 @@ async function info(message) {
     const reg = message.content.match(/(krunker\.io\/\?game=)([a-zA-Z]{2,3}:[a-zA-Z0-9]{5})+/);
     if (!reg) return;
 
-    const setting = message.channel.type == 'text' ?  await this.database.guildGet(message.guild.id, 'LinkInfo') : true;
+    const setting = message.channel.type == 'text' ?  await this.database.guild.get(message.guild.id, 'LinkInfo') : true;
     if (!setting) return;
 
     if (cache.has(reg[2].toLowerCase())) return message.channel.send(cache.get(reg[2].toLowerCase()));

@@ -1,9 +1,9 @@
 function newGuild(guild) {
-    this.database.guildAdd(guild.id);
+    this.database.guild.add(guild.id);
 }
 
 function checkGuilds() {
-    this.guilds.forEach(guild => this.database.guildAdd(guild.id));
+    this.guilds.forEach(guild => this.database.guild.add(guild.id));
 }
 
 module.exports = [

@@ -25,7 +25,7 @@ class StatsCommand extends Command {
         // Check for tagged user's name or authors name
         if (!name || message.mentions.users.size) {
             try {
-                const result = await this.client.database.userGet(name ? message.mentions.users.first().id : message.author.id, 'KrunkerName');
+                const result = await this.client.database.user.get(name ? message.mentions.users.first().id : message.author.id, 'KrunkerName');
                 if (!result) return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername yourNameHere\``); // change throw error
                 name = result;
             } catch (error) {

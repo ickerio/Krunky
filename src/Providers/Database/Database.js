@@ -1,94 +1,53 @@
 const sqlite = require('sqlite');
-const definitions = require('./Definitions.js');
 
 class Database {
-    constructor() {
-        this.definitions = definitions;
-        this.guildCache = new Map();
-        this.userCache = new Map();
+    constructor({ table, key }) {
+        this.table = table;
+        this.key = key;
+        this.cache = new Map();
     }
 
     connect() {
-        return sqlite.open('./dat/krunky.sqlite')
+        return sqlite.open('./dat/krunky.sqlite', { cache: true })
             .then(db => this.db = db);
     }
 
-    /* User Commands */
-    async userAdd(id) {
+    async add(id) {
         await this.db.get(`
-        INSERT OR IGNORE INTO User(UserID)
+        INSERT OR IGNORE INTO ${this.table}(${this.key})
         VALUES (?);
         `, id);
 
-        await this._dbUserGet(id);
+        await this._dbGet(id);
     }
 
-    async userGet(id, key) {
-        if (!this.userCache.has(id)) await this._dbUserGet(id);
-        const user = this.userCache.get(id);
-        if (!user) return undefined;
+    async get(id, key) {
+        if (!this.cache.has(id)) await this._dbGet(id);
+        const data = this.cache.get(id);
+        if (!data) return undefined;
 
-        return user.get(key);
+        return data.get(key);
     }
 
-    async userUpdate(id, key, value) {
+    async update(id, key, value) {
         await this.db.get(`
-        UPDATE User
+        UPDATE ${this.table}
         SET ${key} = ?
-        WHERE User.UserID = ?;
+        WHERE ${this.table}.${this.key} = ?;
         `, value, id);
 
-        await this._dbUserGet(id);
+        await this._dbGet(id);
     }
 
-    async _dbUserGet(id) {
-        const user = await this.db.get(`
-        SELECT * FROM User
-        WHERE User.UserID = ?;
+    async _dbGet(id) {
+        const data = await this.db.get(`
+        SELECT * FROM ${this.table}
+        WHERE ${this.table}.${this.key} = ?;
         `, id);
 
-        if (!user) return;
-        await this.userCache.set(id, new Map(Object.entries(user)));
+        if (!data) return;
+        await this.cache.set(id, new Map(Object.entries(data)));
     }
-
-    /* Guild Commands */
-    async guildAdd(id) {
-        await this.db.get(`
-        INSERT OR IGNORE INTO Guild(GuildID)
-        VALUES (?);
-        `, id);
-
-        await this._dbGuildGet(id);
-    }
-
-    async guildGet(id, key) {
-        if (!this.guildCache.has(id)) await this._dbGuildGet(id);
-        const guild = this.guildCache.get(id);
-        if (!guild) return undefined;
-
-        return guild.get(key);
-    }
-
-    async guildUpdate(id, key, value) {
-        await this.db.get(`
-        UPDATE Guild
-        SET ${key} = ?
-        WHERE Guild.GuildID = ?;
-        `, value, id);
-
-        await this._dbGuildGet(id);
-    }
-
-    async _dbGuildGet(id) {
-        const guild = await this.db.get(`
-        SELECT * FROM Guild
-        WHERE Guild.GuildID = ?;
-        `, id);
-
-        if (!guild) return;
-        await this.guildCache.set(id, new Map(Object.entries(guild)));
-    }
-
 }
 
 module.exports = Database;

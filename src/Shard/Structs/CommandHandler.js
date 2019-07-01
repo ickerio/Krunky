@@ -71,7 +71,7 @@ class CommandHandler {
         if (message.content.startsWith(me) && this.options.allowMention) {
             return `${me} `;
         } else if (message.channel.type === 'text') {
-            return await this.client.database.guildGet(message.guild.id, 'Prefix');
+            return await this.client.database.guild.get(message.guild.id, 'Prefix');
         } else {
             return this.options.prefix;
         }
