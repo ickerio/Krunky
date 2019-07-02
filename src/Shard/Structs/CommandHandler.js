@@ -69,14 +69,12 @@ class CommandHandler {
 
     async findPrefix(message) {
         if (!message.guild) {
-            const defaultPref = this.extPrefix(this.options.prefix);
+            const defaultPref = this.parseLongPrefix(this.options.prefix);
             return { used: defaultPref, desired: defaultPref };
         }
 
-        let desired = await this.client.database.guild.get(message.guild.id, 'Prefix');
-        let me = this.client.user.toString();
-        desired = this.extPrefix(desired);
-        me = this.extPrefix(me);
+        const desired = this.parseLongPrefix(await this.client.database.guild.get(message.guild.id, 'Prefix'));
+        const me = this.parseLongPrefix(this.client.user.toString());
 
         if (message.content.startsWith(me) && this.options.allowMention) {
             return { used: me, desired };
@@ -87,7 +85,7 @@ class CommandHandler {
         }
     }
 
-    extPrefix(prefix) {
+    parseLongPrefix(prefix) {
         return prefix.length > 1 ? `${prefix} ` : prefix; 
     }
 
