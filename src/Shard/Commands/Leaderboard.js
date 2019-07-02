@@ -22,21 +22,20 @@ class LeaderboardCommand extends Command {
     }
 
     async run(message, { board }) {
-        const fullBoard = this.client.social.boardsAlias.get(board);
-        if (!fullBoard) return message.channel.send(`Board ${board} does not exist! Use ${message.prefix}help to see board types`);
+        const boardInfo = this.client.social.boardsAlias.get(board);
+        if (!boardInfo) return message.channel.send(`Error. Board ${board} does not exist! Use ${message.prefix.desired}help to see board types`);
 
-        const formal = fullBoard.name;
-        if (cache.has(formal)) return message.channel.send(cache.get(formal));
+        if (cache.has(boardInfo.name)) return message.channel.send(cache.get(boardInfo.name));
 
         try {
             const boardData = await this.client.social.getLeaderboard(board);
             const buffer = await this.client.renderer.drawLeaderboardImage(boardData);
             const attachment = await new Attachment(buffer, `Krunky${boardData.name}.png`);
 
-            cache.set(formal, attachment);
+            cache.set(boardInfo.name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(error.err ? `Error. ${error.er}` : `Unknown error. Couldn't get leaderboard ${board}`);
+            message.channel.send('Error. Couldn\'t get that leaderboard');
         }
     }
 }

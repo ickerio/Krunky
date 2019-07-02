@@ -22,21 +22,18 @@ class StatsCommand extends Command {
     }
 
     async run(message, { name }) {
-        // Check for tagged user's name or authors name
-        if (!name || message.mentions.users.size) {
-            try {
-                const result = await this.client.database.user.get(name ? message.mentions.users.first().id : message.author.id, 'KrunkerName');
-                if (!result) return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername yourNameHere\``); // change throw error
-                name = result;
-            } catch (error) {
-                return message.channel.send(`Error. Unknown username. Set with \`${message.prefix}settings krunkername yourNameHere\``);
-            }
+        const mention = name ? name.match(/<@!?(\d+)>/) : undefined;
+        if (!name || mention) {
+            name = await this.client.database.user.get(mention ? mention[1] : message.author.id, 'KrunkerName');
         }
 
-        // Check image cache
+        if (!name) {
+            const error = `${mention ? 'Mentioned user hasn\'t linked their' : 'You haven\'t linked your'} username with ${message.prefix.desired}save`;
+            return message.channel.send(`Error. ${error}`);
+        }
+
         if (cache.has(name)) return message.channel.send(cache.get(name));
 
-        // Hit API and render image
         try {
             const data = await this.client.social.getUser(name);
             const buffer = this.client.renderer.drawPlayerImage(data);
@@ -45,7 +42,7 @@ class StatsCommand extends Command {
             cache.set(name, attachment);
             message.channel.send(attachment);
         } catch (error) {
-            message.channel.send(`Unknown error. Couldn't get stats for ${name}`);
+            message.channel.send('Error. Couldn\'t get stats for that user');
         }
     }
 }

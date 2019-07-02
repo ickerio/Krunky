@@ -38,17 +38,16 @@ class SettingsCommand extends Command {
 
     // User settings
     async displayUserOptions(message) {
-        const prefix = await this.client.database.guild.get(message.guild.id, 'Prefix');
         const embed = new RichEmbed()
             .setAuthor('Krunky User Settings', this.client.constants.embedImages.embedHeader)
-            .setDescription(`Use the command format \`${prefix}settings <option>\` to view more info about an option.`)
+            .setDescription(`Use the command format \`${message.prefix.desired}settings <option>\` to view more info about an option.`)
             .setThumbnail(this.client.constants.embedImages.settingsThumbnail)
             .setColor(this.client.constants.embedColour);
 
         this.client.database.definitions
             .filter(def => def.type === 'User')
             .forEach(def => 
-                embed.addField(`${prefix}settings ${def.usage} yourChoiceHere`, def.description)
+                embed.addField(`${message.prefix.desired}settings ${def.usage} yourChoiceHere`, def.description)
             );
         
         message.channel.send(embed);
@@ -56,7 +55,6 @@ class SettingsCommand extends Command {
 
     // Guild settings
     async displayGuildOptions(message) {
-        const prefix = await this.client.database.guild.get(message.guild.id, 'Prefix');
         const embed = new RichEmbed()
             .setAuthor('Krunky Admin Panel', this.client.constants.embedImages.embedHeader)
             .setColor(this.client.constants.embedColour);
@@ -64,7 +62,7 @@ class SettingsCommand extends Command {
         this.client.database.definitions
             .filter(def => def.type === 'Guild')
             .forEach(def => 
-                embed.addField(`${prefix}settings ${def.usage} yourChoiceHere`, def.description)
+                embed.addField(`${message.prefix.desired}settings ${def.usage} yourChoiceHere`, def.description)
             );
         
         message.channel.send(embed);

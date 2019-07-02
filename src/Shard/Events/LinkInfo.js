@@ -32,7 +32,7 @@ async function info(message) {
         cache.set(match.id.toLowerCase(), embed);
         message.channel.send(embed);
     } catch (error) {
-        message.channel.send('An error occurred getting that game\'s info');
+        message.channel.send('Error. Couldn\'t get that game\'s info');
     }
 }
 
