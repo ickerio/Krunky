@@ -35,9 +35,10 @@ class CommandHandler {
     }
 
     async handle(message) {
+        if (message.author.bot) return;
+
         const prefix = await this.findPrefix(message);
-        
-        if (this.shouldIgnoreMessage(message, prefix.used)) return;
+        if (!prefix) return;
     
         const [ call, args ] = this.extractDetails(message, prefix.used);
     
@@ -68,26 +69,31 @@ class CommandHandler {
 
     async findPrefix(message) {
         if (!message.guild) {
-            return { used: this.options.prefix, desired: this.options.prefix };
+            const defaultPref = this.extPrefix(this.options.prefix);
+            return { used: defaultPref, desired: defaultPref };
         }
 
-        const desired = await this.client.database.guild.get(message.guild.id, 'Prefix');
-        const me = this.client.user.toString();
+        let desired = await this.client.database.guild.get(message.guild.id, 'Prefix');
+        let me = this.client.user.toString();
+        desired = this.extPrefix(desired);
+        me = this.extPrefix(me);
 
         if (message.content.startsWith(me) && this.options.allowMention) {
             return { used: me, desired };
-        } else {
+        } else if (message.content.startsWith(desired)) {
             return { used: desired, desired };
-        } 
+        } else {
+            return;
+        }
     }
 
-    shouldIgnoreMessage(message, prefix) {
-        return !message.content.startsWith(prefix) || message.author.bot;
+    extPrefix(prefix) {
+        return prefix.length > 1 ? `${prefix} ` : prefix; 
     }
 
     extractDetails(message, prefix) {
         if (prefix.length > 1) {
-            const args = message.content.replace(`${prefix} `, '').split(/\s+/g);
+            const args = message.content.replace(prefix, '').split(/\s+/g);
             const call = args.shift().toLowerCase();
             return [call, args];
         } else {
