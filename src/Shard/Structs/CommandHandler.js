@@ -37,9 +37,9 @@ class CommandHandler {
     async handle(message) {
         const prefix = await this.findPrefix(message);
         
-        if (this.shouldIgnoreMessage(message, prefix)) return;
+        if (this.shouldIgnoreMessage(message, prefix.used)) return;
     
-        const [ call, args ] = this.extractDetails(message, prefix);
+        const [ call, args ] = this.extractDetails(message, prefix.used);
     
         const command = this.findCommand(call);
         if (!command) return;
@@ -48,12 +48,12 @@ class CommandHandler {
 
         const ratelimit = this.doRateLimiting(command, message.author.id);
         if (ratelimit) {
-            return message.channel.send(`You are being ratelimited. Wait ${(ratelimit / 1000).toFixed(1)}s for ${command.uses} more uses`);
+            return message.channel.send(`Error. You are being ratelimited, wait ${(ratelimit / 1000).toFixed(1)}s for ${command.uses} more uses`);
         }
 
         const argsObj = this.getArgumentsObject(args, command);
         if (!argsObj) {
-            return message.channel.send(`Wrong arguments given. Use \`${prefix}${command.usage}\``);
+            return message.channel.send(`Error. Wrong arguments given, use ${prefix.desired}${command.usage}`);
         }
 
         message.prefix = prefix;
@@ -62,19 +62,23 @@ class CommandHandler {
             Logger.command(message, command, this.client.shard.id);
             command.run(message, argsObj);
         } catch(error) {
-            message.channel.send(`An unknown error occoured whilst running \`${command.name}\` for ${message.author.tag}`);
+            message.channel.send('Error. Something went seriously wrong executing that command');
         }
     }
 
     async findPrefix(message) {
-        const me = this.client.user.toString();
-        if (message.content.startsWith(me) && this.options.allowMention) {
-            return `${me} `;
-        } else if (message.channel.type === 'text') {
-            return await this.client.database.guild.get(message.guild.id, 'Prefix');
-        } else {
-            return this.options.prefix;
+        if (!message.guild) {
+            return { used: this.options.prefix, desired: this.options.prefix };
         }
+
+        const desired = await this.client.database.guild.get(message.guild.id, 'Prefix');
+        const me = this.client.user.toString();
+
+        if (message.content.startsWith(me) && this.options.allowMention) {
+            return { used: me, desired };
+        } else {
+            return { used: desired, desired };
+        } 
     }
 
     shouldIgnoreMessage(message, prefix) {
@@ -82,16 +86,13 @@ class CommandHandler {
     }
 
     extractDetails(message, prefix) {
-        const me = this.client.user.toString();
-        const tag = message.content.startsWith(me);
-
-        if (tag) {
-            const args = message.content.replace(`${me} `, '').split(/\s+/g);
+        if (prefix.length > 1) {
+            const args = message.content.replace(`${prefix} `, '').split(/\s+/g);
             const call = args.shift().toLowerCase();
             return [call, args];
         } else {
             const args = message.content.split(/\s+/g);
-            const call = args.shift().slice(prefix.length).toLowerCase();
+            const call = args.shift().slice(1).toLowerCase();
             return [call, args];
         }
     }
