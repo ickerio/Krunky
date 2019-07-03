@@ -41,7 +41,7 @@ class HelpCommand extends Command {
         this.client.commandHandler.commands
             .filter(command => command.name !== 'Help' && command.ownerOnly != true)
             .forEach(command => 
-                embed.addField(message.prefix + command.usage, command.description)
+                embed.addField(message.prefix.desired + command.usage, command.description)
             );
             
         message.channel.send(embed);
