@@ -5,7 +5,6 @@ const EventHandler = require('./EventHandler.js');
 const Logger = require('../../Util/Logger.js');
 
 const Database = require('../../Providers/Database/Database.js');
-const Definitions = require('../../Providers/Database/Definitions.js');
 const Matchmaker = require('../../Providers/Matchmaker/Matchmaker.js');
 const Renderer = require('../../Providers/Renderer/Renderer.js');
 const Social = require('../../Providers/Social/Social.js');
@@ -16,8 +15,7 @@ class KrunkyShard extends Discord.Client {
 
         this.database =  {
             user: new Database({ table: 'User', key: 'UserID' }),
-            guild: new Database({ table: 'Guild', key: 'GuildID' }),
-            definitions: Definitions
+            guild: new Database({ table: 'Guild', key: 'GuildID' })
         };
         this.constants = options.constants;
         this.matchmaker = new Matchmaker(this);

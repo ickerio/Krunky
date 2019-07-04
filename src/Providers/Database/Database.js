@@ -1,7 +1,9 @@
 const sqlite = require('sqlite');
+const Definitions = require('./Definitions.js');
 
 class Database {
     constructor({ table, key }) {
+        this.definitions = Definitions[table];
         this.table = table;
         this.key = key;
         this.cache = new Map();
