@@ -39,7 +39,7 @@ class KrunkyManager extends Discord.ShardingManager{
 
         fetch(`https://discordbots.org/api/bots/${this.userId}/stats`, {
             method: 'POST',
-            body: JSON.stringify({ guild_count: guildCount }),
+            body: JSON.stringify({ server_count: guildCount }),
             headers: { 
                 Authorization: this.statsTokens.DBL_TOKEN,
                 'Content-Type': 'application/json'
