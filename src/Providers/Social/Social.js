@@ -95,12 +95,12 @@ class Social {
 
     createAliasMap() {
         const table = {
-            score: { alias: ['lvl', 'lvls', 'levels', 'level', 'score'], name: 'Levels', unit: 'LVL' },
-            kills: { alias: ['kills', 'kill'], name: 'Kills', unit: 'Kills' },
-            timeplayed: { alias: ['timeplayed', 'time'], name: 'Time Played', unit: '' },
-            funds: { alias: ['krunkies', 'money', 'funds'], name: 'Krunkies', unit: 'KR' },
-            clan: { alias: ['clan', 'clans'], name: 'Clans', unit: 'Score' },
-            wins: { alias: ['wins', 'win'], name: 'Wins', unit: 'Wins' }
+            player_score: { alias: ['lvl', 'lvls', 'levels', 'level', 'score'], name: 'Levels', unit: 'LVL' },
+            player_kills: { alias: ['kills', 'kill'], name: 'Kills', unit: 'Kills' },
+            player_timeplayed: { alias: ['timeplayed', 'time'], name: 'Time Played', unit: '' },
+            player_funds: { alias: ['krunkies', 'money', 'funds'], name: 'Krunkies', unit: 'KR' },
+            player_clan: { alias: ['clan', 'clans'], name: 'Clans', unit: 'Score' },
+            player_wins: { alias: ['wins', 'win'], name: 'Wins', unit: 'Wins' }
         };
         
         const map = new Map();

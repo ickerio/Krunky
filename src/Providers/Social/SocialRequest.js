@@ -44,8 +44,7 @@ class SocialRequest {
         if (!req || this.ws.readyState === WebSocket.CONNECTING) return this.nextRequest();
         if (this.ws.readyState === WebSocket.CLOSING || this.ws.readyState === WebSocket.CLOSED) return this.connect();
 
-
-        this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, '000000', null ]]));
+        this.ws.send(Message.encode([ 'r', [ req.endpoint, req.query, null, null ]]));
 
         req.timeout = setTimeout(() => {
             req.reject({ err: 'Item does not exist'});
@@ -60,9 +59,7 @@ class SocialRequest {
         const data = Message.decode(buf);
         if (data.toString() === [ 'pi', [] ].toString()) return this.pong();
 
-        const prefix = ['player_score', 'player_kills', 'player_timeplayed', 'player_funds', 'player_clan', 'player_wins'].includes(data[1][1]);
-
-        const req = this.queue.find(r => r.endpoint === data[1][0] && `${prefix ? 'player_' : ''}${r.query}` === data[1][1]);
+        const req = this.queue.find(r => r.endpoint === data[1][0] && r.query === data[1][1]);
         if (!req) return;
 
         req.resolve(data);
